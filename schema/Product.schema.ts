@@ -4,9 +4,20 @@ import { document } from "@keystone-6/fields-document";
 import { text, relationship, integer, image } from "@keystone-6/core/fields";
 import { cloudinaryImage } from "@keystone-6/cloudinary";
 import "dotenv/config";
+import { permissions } from "../auth/access";
 
 const Product = list({
-  access: allowAll,
+  access: {
+    operation: {
+      update: permissions.canManageProducts,
+      delete: permissions.canManageProducts,
+      query: permissions.canManageProducts,
+      create: permissions.canManageProducts,
+    },
+  },
+  ui: {
+    hideCreate: (args) => !permissions.canManageProducts(args),
+  },
 
   fields: {
     productName: text({

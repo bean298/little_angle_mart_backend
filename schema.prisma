@@ -21,17 +21,27 @@ model Product {
 }
 
 model User {
-  id           String @id @default(cuid())
-  name         String @default("")
-  userEmail    String @unique @default("")
+  id           String  @id @default(cuid())
+  name         String  @default("")
+  userEmail    String  @unique @default("")
   userPassword String
-  userPhone    String @default("")
-  userAddress  String @default("")
-  userRole     String @default("")
+  userPhone    String  @default("")
+  userAddress  String  @default("")
+  role         Role?   @relation("User_role", fields: [roleId], references: [id])
+  roleId       String? @map("role")
+
+  @@index([roleId])
 }
 
 model Category {
   id                           String    @id @default(cuid())
   categoryName                 String    @default("")
   from_Product_productCategory Product[] @relation("Product_productCategory")
+}
+
+model Role {
+  id                String  @id @default(cuid())
+  name              String  @default("")
+  canManageProducts Boolean @default(false)
+  assignedTo        User[]  @relation("User_role")
 }

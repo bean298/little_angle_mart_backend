@@ -23,7 +23,18 @@ const User = list({
       validation: { isRequired: true },
     }),
     userAddress: text({}),
-    userRole: text({}),
+    role: relationship({
+      ref: "Role.assignedTo",
+      access: {
+        // create: permissions.canManagePeople,
+        // update: permissions.canManagePeople,
+      },
+      ui: {
+        itemView: {
+          // fieldMode: args => (permissions.canManagePeople(args) ? 'edit' : 'read'),
+        },
+      },
+    }),
   },
 });
 
