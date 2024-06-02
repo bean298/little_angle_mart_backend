@@ -72,7 +72,7 @@ var Product = (0, import_core.list)({
       label: "Gi\xE1 s\u1EA3n ph\u1EA9m",
       validation: { isRequired: true }
     }),
-    image: (0, import_cloudinary.cloudinaryImage)({
+    productImage: (0, import_cloudinary.cloudinaryImage)({
       cloudinary: {
         cloudName: process.env.CLOUDINARY_CLOUD_NAME ?? "",
         apiKey: process.env.CLOUDINARY_API_KEY ?? "",
@@ -143,16 +143,6 @@ var import_core4 = require("@keystone-6/core");
 var import_access4 = require("@keystone-6/core/access");
 var import_fields4 = require("@keystone-6/core/fields");
 var Role = (0, import_core4.list)({
-  /*
-      SPEC
-      - [x] Block all public access
-      - [x] Restrict edit access based on canManageRoles
-      - [ ] Prevent users from deleting their own role
-      - [ ] Add a pre-save hook that ensures some permissions are selected when others are:
-          - [ ] when canEditOtherPeople is true, canSeeOtherPeople must be true
-          - [ ] when canManagePeople is true, canEditOtherPeople and canSeeOtherPeople must be true
-      - [ ] Extend the Admin UI with client-side validation based on the same set of rules
-    */
   access: {
     operation: import_access4.allowAll
     //   operation: {
@@ -172,29 +162,7 @@ var Role = (0, import_core4.list)({
   // },
   fields: {
     name: (0, import_fields4.text)({ validation: { isRequired: true } }),
-    /* Create Todos means:
-         - create todos (can only assign them to others with canManageAllTodos) */
-    //   canCreateTodos: checkbox({ defaultValue: false }),
-    //   /* Manage All Todos means:
-    //      - create new Todo items and assign them to someone else (with canCreateTodos)
-    //      - update and delete Todo items not assigned to the current user */
-    //   canManageAllTodos: checkbox({ defaultValue: false }),
-    //   /* See Other Users means:
-    //      - list all users in the database (users can always see themselves) */
-    //   canSeeOtherPeople: checkbox({ defaultValue: false }),
-    //   /* Edit Other Users means:
-    //      - edit other users in the database (users can always edit their own item) */
-    //   canEditOtherPeople: checkbox({ defaultValue: false }),
-    //   /* Manage Users means:
-    //      - change passwords (users can always change their own password)
-    //      - assign roles to themselves and other users */
-    //   canManagePeople: checkbox({ defaultValue: false }),
-    //   /* Manage Roles means:
-    //      - create, edit, and delete roles */
     canManageProducts: (0, import_fields4.checkbox)({ defaultValue: false }),
-    //   /* Use AdminUI means:
-    //      - can access the Admin UI next app */
-    //   canUseAdminUI: checkbox({ defaultValue: false }),
     assignedTo: (0, import_fields4.relationship)({
       ref: "User.role",
       many: true,

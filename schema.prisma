@@ -17,7 +17,7 @@ model Product {
   productDescription String     @default("[{\"type\":\"paragraph\",\"children\":[{\"text\":\"\"}]}]")
   productCategory    Category[] @relation("Product_productCategory")
   productPrice       Int
-  image              String?
+  productImage       String?
 }
 
 model User {

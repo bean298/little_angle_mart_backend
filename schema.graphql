@@ -8,7 +8,7 @@ type Product {
   productCategory(where: CategoryWhereInput! = {}, orderBy: [CategoryOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: CategoryWhereUniqueInput): [Category!]
   productCategoryCount(where: CategoryWhereInput! = {}): Int
   productPrice: Int
-  image: CloudinaryImage_File
+  productImage: CloudinaryImage_File
 }
 
 type Product_productDescription_Document {
@@ -149,7 +149,7 @@ input ProductUpdateInput {
   productDescription: JSON
   productCategory: CategoryRelateToManyForUpdateInput
   productPrice: Int
-  image: Upload
+  productImage: Upload
 }
 
 input CategoryRelateToManyForUpdateInput {
@@ -172,7 +172,7 @@ input ProductCreateInput {
   productDescription: JSON
   productCategory: CategoryRelateToManyForCreateInput
   productPrice: Int
-  image: Upload
+  productImage: Upload
 }
 
 input CategoryRelateToManyForCreateInput {
