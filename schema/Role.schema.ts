@@ -6,7 +6,7 @@ import { permissions } from "../auth/access";
 const Role = list({
   access: {
     operation: {
-      query: permissions.canManageUser,
+      query: allowAll,
       update: permissions.canManageUser,
       delete: permissions.canManageUser,
       create: permissions.canManageUser,
@@ -18,11 +18,24 @@ const Role = list({
   },
 
   fields: {
-    name: text({ validation: { isRequired: true } }),
-    canManageProducts: checkbox({ defaultValue: false }),
-    canManageUser: checkbox({ defaultValue: false }),
-    canManageCategory: checkbox({ defaultValue: false }),
+    name: text({
+      label: "Quyền hạn",
+      validation: { isRequired: true },
+    }),
+    canManageProducts: checkbox({
+      label: "Quản lý sản phẩm",
+      defaultValue: false,
+    }),
+    canManageUser: checkbox({
+      label: "Quản lý người dùng",
+      defaultValue: false,
+    }),
+    canManageCategory: checkbox({
+      label: "Quản lý loại sản phẩm",
+      defaultValue: false,
+    }),
     assignedTo: relationship({
+      label: "Phân công quyền hạn",
       ref: "User.role",
       many: true,
       ui: {

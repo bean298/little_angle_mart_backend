@@ -12,12 +12,15 @@ generator client {
 }
 
 model Product {
-  id                 String     @id @default(cuid())
-  productName        String     @default("")
-  productDescription String     @default("[{\"type\":\"paragraph\",\"children\":[{\"text\":\"\"}]}]")
-  productCategory    Category[] @relation("Product_productCategory")
-  productPrice       Int
+  id                 String    @id @default(cuid())
+  productName        String    @default("")
+  productDescription String    @default("[{\"type\":\"paragraph\",\"children\":[{\"text\":\"\"}]}]")
+  productCategory    Category? @relation("Product_productCategory", fields: [productCategoryId], references: [id])
+  productCategoryId  String?   @map("productCategory")
+  productPrice       Float
   productImage       String?
+
+  @@index([productCategoryId])
 }
 
 model User {
@@ -34,9 +37,9 @@ model User {
 }
 
 model Category {
-  id                           String    @id @default(cuid())
-  categoryName                 String    @default("")
-  from_Product_productCategory Product[] @relation("Product_productCategory")
+  id                String    @id @default(cuid())
+  categoryName      String    @default("")
+  productOfCategory Product[] @relation("Product_productCategory")
 }
 
 model Role {
@@ -46,4 +49,8 @@ model Role {
   canManageUser     Boolean @default(false)
   canManageCategory Boolean @default(false)
   assignedTo        User[]  @relation("User_role")
+}
+
+model Order {
+  id String @id @default(cuid())
 }

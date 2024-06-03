@@ -1,7 +1,7 @@
 import { list } from "@keystone-6/core";
 import { allowAll } from "@keystone-6/core/access";
 import { document } from "@keystone-6/fields-document";
-import { text, relationship, integer } from "@keystone-6/core/fields";
+import { text, relationship, integer, float } from "@keystone-6/core/fields";
 import { cloudinaryImage } from "@keystone-6/cloudinary";
 import "dotenv/config";
 import { permissions } from "../auth/access";
@@ -36,14 +36,14 @@ const Product = list({
     }),
     productCategory: relationship({
       label: "Nhóm sản phẩm",
-      ref: "Category",
-      many: true,
+      ref: "Category.productOfCategory",
     }),
-    productPrice: integer({
+    productPrice: float({
       label: "Giá sản phẩm",
       validation: { isRequired: true },
     }),
     productImage: cloudinaryImage({
+      label: "Hình ảnh sản phẩm",
       cloudinary: {
         cloudName: process.env.CLOUDINARY_CLOUD_NAME ?? "",
         apiKey: process.env.CLOUDINARY_API_KEY ?? "",

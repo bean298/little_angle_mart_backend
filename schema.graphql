@@ -5,9 +5,8 @@ type Product {
   id: ID!
   productName: String
   productDescription: Product_productDescription_Document
-  productCategory(where: CategoryWhereInput! = {}, orderBy: [CategoryOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: CategoryWhereUniqueInput): [Category!]
-  productCategoryCount(where: CategoryWhereInput! = {}): Int
-  productPrice: Int
+  productCategory: Category
+  productPrice: Float
   productImage: CloudinaryImage_File
 }
 
@@ -73,8 +72,8 @@ input ProductWhereInput {
   NOT: [ProductWhereInput!]
   id: IDFilter
   productName: StringFilter
-  productCategory: CategoryManyRelationFilter
-  productPrice: IntFilter
+  productCategory: CategoryWhereInput
+  productPrice: FloatFilter
 }
 
 input IDFilter {
@@ -116,21 +115,15 @@ input NestedStringFilter {
   not: NestedStringFilter
 }
 
-input CategoryManyRelationFilter {
-  every: CategoryWhereInput
-  some: CategoryWhereInput
-  none: CategoryWhereInput
-}
-
-input IntFilter {
-  equals: Int
-  in: [Int!]
-  notIn: [Int!]
-  lt: Int
-  lte: Int
-  gt: Int
-  gte: Int
-  not: IntFilter
+input FloatFilter {
+  equals: Float
+  in: [Float!]
+  notIn: [Float!]
+  lt: Float
+  lte: Float
+  gt: Float
+  gte: Float
+  not: FloatFilter
 }
 
 input ProductOrderByInput {
@@ -147,16 +140,15 @@ enum OrderDirection {
 input ProductUpdateInput {
   productName: String
   productDescription: JSON
-  productCategory: CategoryRelateToManyForUpdateInput
-  productPrice: Int
+  productCategory: CategoryRelateToOneForUpdateInput
+  productPrice: Float
   productImage: Upload
 }
 
-input CategoryRelateToManyForUpdateInput {
-  disconnect: [CategoryWhereUniqueInput!]
-  set: [CategoryWhereUniqueInput!]
-  create: [CategoryCreateInput!]
-  connect: [CategoryWhereUniqueInput!]
+input CategoryRelateToOneForUpdateInput {
+  create: CategoryCreateInput
+  connect: CategoryWhereUniqueInput
+  disconnect: Boolean
 }
 
 """The `Upload` scalar type represents a file upload."""
@@ -170,14 +162,14 @@ input ProductUpdateArgs {
 input ProductCreateInput {
   productName: String
   productDescription: JSON
-  productCategory: CategoryRelateToManyForCreateInput
-  productPrice: Int
+  productCategory: CategoryRelateToOneForCreateInput
+  productPrice: Float
   productImage: Upload
 }
 
-input CategoryRelateToManyForCreateInput {
-  create: [CategoryCreateInput!]
-  connect: [CategoryWhereUniqueInput!]
+input CategoryRelateToOneForCreateInput {
+  create: CategoryCreateInput
+  connect: CategoryWhereUniqueInput
 }
 
 type User {
@@ -256,6 +248,8 @@ input RoleRelateToOneForCreateInput {
 type Category {
   id: ID!
   categoryName: String
+  productOfCategory(where: ProductWhereInput! = {}, orderBy: [ProductOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ProductWhereUniqueInput): [Product!]
+  productOfCategoryCount(where: ProductWhereInput! = {}): Int
 }
 
 input CategoryWhereUniqueInput {
@@ -268,6 +262,13 @@ input CategoryWhereInput {
   NOT: [CategoryWhereInput!]
   id: IDFilter
   categoryName: StringFilter
+  productOfCategory: ProductManyRelationFilter
+}
+
+input ProductManyRelationFilter {
+  every: ProductWhereInput
+  some: ProductWhereInput
+  none: ProductWhereInput
 }
 
 input CategoryOrderByInput {
@@ -277,6 +278,14 @@ input CategoryOrderByInput {
 
 input CategoryUpdateInput {
   categoryName: String
+  productOfCategory: ProductRelateToManyForUpdateInput
+}
+
+input ProductRelateToManyForUpdateInput {
+  disconnect: [ProductWhereUniqueInput!]
+  set: [ProductWhereUniqueInput!]
+  create: [ProductCreateInput!]
+  connect: [ProductWhereUniqueInput!]
 }
 
 input CategoryUpdateArgs {
@@ -286,6 +295,12 @@ input CategoryUpdateArgs {
 
 input CategoryCreateInput {
   categoryName: String
+  productOfCategory: ProductRelateToManyForCreateInput
+}
+
+input ProductRelateToManyForCreateInput {
+  create: [ProductCreateInput!]
+  connect: [ProductWhereUniqueInput!]
 }
 
 type Role {
@@ -366,6 +381,25 @@ input UserRelateToManyForCreateInput {
   connect: [UserWhereUniqueInput!]
 }
 
+type Order {
+  id: ID!
+}
+
+input OrderWhereUniqueInput {
+  id: ID
+}
+
+input OrderWhereInput {
+  AND: [OrderWhereInput!]
+  OR: [OrderWhereInput!]
+  NOT: [OrderWhereInput!]
+  id: IDFilter
+}
+
+input OrderOrderByInput {
+  id: OrderDirection
+}
+
 """
 The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
 """
@@ -396,6 +430,8 @@ type Mutation {
   updateRoles(data: [RoleUpdateArgs!]!): [Role]
   deleteRole(where: RoleWhereUniqueInput!): Role
   deleteRoles(where: [RoleWhereUniqueInput!]!): [Role]
+  deleteOrder(where: OrderWhereUniqueInput!): Order
+  deleteOrders(where: [OrderWhereUniqueInput!]!): [Order]
   endSession: Boolean!
   authenticateUserWithPassword(userEmail: String!, userPassword: String!): UserAuthenticationWithPasswordResult
   createInitialUser(data: CreateInitialUserInput!): UserAuthenticationWithPasswordSuccess!
@@ -432,6 +468,9 @@ type Query {
   roles(where: RoleWhereInput! = {}, orderBy: [RoleOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: RoleWhereUniqueInput): [Role!]
   role(where: RoleWhereUniqueInput!): Role
   rolesCount(where: RoleWhereInput! = {}): Int
+  orders(where: OrderWhereInput! = {}, orderBy: [OrderOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: OrderWhereUniqueInput): [Order!]
+  order(where: OrderWhereUniqueInput!): Order
+  ordersCount(where: OrderWhereInput! = {}): Int
   keystone: KeystoneMeta!
   authenticatedItem: AuthenticatedItem
 }

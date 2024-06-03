@@ -23,7 +23,7 @@ __export(keystone_exports, {
   default: () => keystone_default
 });
 module.exports = __toCommonJS(keystone_exports);
-var import_core5 = require("@keystone-6/core");
+var import_core6 = require("@keystone-6/core");
 
 // schema/Product.schema.ts
 var import_core = require("@keystone-6/core");
@@ -69,14 +69,14 @@ var Product = (0, import_core.list)({
     }),
     productCategory: (0, import_fields.relationship)({
       label: "Nh\xF3m s\u1EA3n ph\u1EA9m",
-      ref: "Category",
-      many: true
+      ref: "Category.productOfCategory"
     }),
-    productPrice: (0, import_fields.integer)({
+    productPrice: (0, import_fields.float)({
       label: "Gi\xE1 s\u1EA3n ph\u1EA9m",
       validation: { isRequired: true }
     }),
     productImage: (0, import_cloudinary.cloudinaryImage)({
+      label: "H\xECnh \u1EA3nh s\u1EA3n ph\u1EA9m",
       cloudinary: {
         cloudName: process.env.CLOUDINARY_CLOUD_NAME ?? "",
         apiKey: process.env.CLOUDINARY_API_KEY ?? "",
@@ -107,7 +107,13 @@ var Category = (0, import_core2.list)({
   },
   fields: {
     categoryName: (0, import_fields2.text)({
+      label: "Lo\u1EA1i s\u1EA3n ph\u1EA9m",
       validation: { isRequired: true }
+    }),
+    productOfCategory: (0, import_fields2.relationship)({
+      label: "C\xE1c s\u1EA3n ph\u1EA9m c\xF3 trong lo\u1EA1i n\xE0y",
+      ref: "Product.productCategory",
+      many: true
     })
   }
 });
@@ -121,8 +127,8 @@ var User = (0, import_core3.list)({
   access: {
     operation: {
       query: import_access5.allowAll,
-      // update: permissions.canUpdateOwnUser,
-      update: import_access5.allowAll,
+      update: permissions.canManageUser,
+      // update: allowAll,
       delete: permissions.canManageUser,
       create: permissions.canManageUser
     }
@@ -133,26 +139,33 @@ var User = (0, import_core3.list)({
   },
   fields: {
     name: (0, import_fields3.text)({
+      label: "T\xEAn",
       validation: { isRequired: true }
     }),
     userEmail: (0, import_fields3.text)({
+      label: "Email",
       validation: { isRequired: true },
       isIndexed: "unique"
     }),
     userPassword: (0, import_fields3.password)({
+      label: "M\u1EADt kh\u1EA9u",
       validation: {
         isRequired: true,
         length: { min: 5, max: 20 }
       }
     }),
     userPhone: (0, import_fields3.text)({
+      label: "S\u1ED1 \u0111i\u1EC7n tho\u1EA1i",
       validation: { isRequired: true }
     }),
-    userAddress: (0, import_fields3.text)({}),
+    userAddress: (0, import_fields3.text)({
+      label: "\u0110\u1ECBa ch\u1EC9"
+    }),
     role: (0, import_fields3.relationship)({
+      label: "Quy\u1EC1n h\u1EA1n",
       ref: "Role.assignedTo",
-      access: {
-        update: permissions.canManageUser
+      ui: {
+        itemView: { fieldMode: "read" }
       }
     })
   }
@@ -161,11 +174,12 @@ var User_schema_default = User;
 
 // schema/Role.schema.ts
 var import_core4 = require("@keystone-6/core");
+var import_access7 = require("@keystone-6/core/access");
 var import_fields4 = require("@keystone-6/core/fields");
 var Role = (0, import_core4.list)({
   access: {
     operation: {
-      query: permissions.canManageUser,
+      query: import_access7.allowAll,
       update: permissions.canManageUser,
       delete: permissions.canManageUser,
       create: permissions.canManageUser
@@ -175,11 +189,24 @@ var Role = (0, import_core4.list)({
     hideCreate: (args) => !permissions.canManageUser(args)
   },
   fields: {
-    name: (0, import_fields4.text)({ validation: { isRequired: true } }),
-    canManageProducts: (0, import_fields4.checkbox)({ defaultValue: false }),
-    canManageUser: (0, import_fields4.checkbox)({ defaultValue: false }),
-    canManageCategory: (0, import_fields4.checkbox)({ defaultValue: false }),
+    name: (0, import_fields4.text)({
+      label: "Quy\u1EC1n h\u1EA1n",
+      validation: { isRequired: true }
+    }),
+    canManageProducts: (0, import_fields4.checkbox)({
+      label: "Qu\u1EA3n l\xFD s\u1EA3n ph\u1EA9m",
+      defaultValue: false
+    }),
+    canManageUser: (0, import_fields4.checkbox)({
+      label: "Qu\u1EA3n l\xFD ng\u01B0\u1EDDi d\xF9ng",
+      defaultValue: false
+    }),
+    canManageCategory: (0, import_fields4.checkbox)({
+      label: "Qu\u1EA3n l\xFD lo\u1EA1i s\u1EA3n ph\u1EA9m",
+      defaultValue: false
+    }),
     assignedTo: (0, import_fields4.relationship)({
+      label: "Ph\xE2n c\xF4ng quy\u1EC1n h\u1EA1n",
       ref: "User.role",
       many: true,
       ui: {
@@ -190,12 +217,29 @@ var Role = (0, import_core4.list)({
 });
 var Role_schema_default = Role;
 
+// schema/Order.schema.ts
+var import_core5 = require("@keystone-6/core");
+var import_access9 = require("@keystone-6/core/access");
+var Order = (0, import_core5.list)({
+  access: {
+    operation: {
+      query: import_access9.allowAll,
+      update: import_access9.allowAll,
+      delete: import_access9.allowAll,
+      create: import_access9.allowAll
+    }
+  },
+  fields: {}
+});
+var Order_schema_default = Order;
+
 // schema/index.ts
 var lists = {
   Product: Product_schema_default,
   User: User_schema_default,
   Category: Category_schema_default,
-  Role: Role_schema_default
+  Role: Role_schema_default,
+  Order: Order_schema_default
 };
 
 // auth.ts
@@ -252,7 +296,7 @@ var session = (0, import_session.statelessSessions)({
 
 // keystone.ts
 var keystone_default = withAuth(
-  (0, import_core5.config)({
+  (0, import_core6.config)({
     db: {
       // we're using sqlite for the fastest startup experience
       //   for more information on what database might be appropriate for you

@@ -7,8 +7,8 @@ const User = list({
   access: {
     operation: {
       query: allowAll,
-      // update: permissions.canUpdateOwnUser,
-      update: allowAll,
+      update: permissions.canManageUser,
+      // update: allowAll,
       delete: permissions.canManageUser,
       create: permissions.canManageUser,
     },
@@ -21,26 +21,33 @@ const User = list({
 
   fields: {
     name: text({
+      label: "Tên",
       validation: { isRequired: true },
     }),
     userEmail: text({
+      label: "Email",
       validation: { isRequired: true },
       isIndexed: "unique",
     }),
     userPassword: password({
+      label: "Mật khẩu",
       validation: {
         isRequired: true,
         length: { min: 5, max: 20 },
       },
     }),
     userPhone: text({
+      label: "Số điện thoại",
       validation: { isRequired: true },
     }),
-    userAddress: text({}),
+    userAddress: text({
+      label: "Địa chỉ",
+    }),
     role: relationship({
+      label: "Quyền hạn",
       ref: "Role.assignedTo",
-      access: {
-        update: permissions.canManageUser,
+      ui: {
+        itemView: { fieldMode: "read" },
       },
     }),
   },
