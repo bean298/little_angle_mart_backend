@@ -27,6 +27,7 @@ var import_core5 = require("@keystone-6/core");
 
 // schema/Product.schema.ts
 var import_core = require("@keystone-6/core");
+var import_access = require("@keystone-6/core/access");
 var import_fields_document = require("@keystone-6/fields-document");
 var import_fields = require("@keystone-6/core/fields");
 var import_cloudinary = require("@keystone-6/cloudinary");
@@ -34,21 +35,24 @@ var import_config = require("dotenv/config");
 
 // auth/access.ts
 var permissions = {
-  canManageProducts: ({ session: session2 }) => session2?.data.role?.canManageProducts ?? false
+  canManageProducts: ({ session: session2 }) => session2?.data.role?.canManageProducts ?? false,
+  canManageUser: ({ session: session2 }) => session2?.data.role?.canManageProducts ?? false,
+  canManageCategory: ({ session: session2 }) => session2?.data.role?.canManageCategory ?? false
 };
 
 // schema/Product.schema.ts
 var Product = (0, import_core.list)({
   access: {
     operation: {
+      query: import_access.allowAll,
       update: permissions.canManageProducts,
       delete: permissions.canManageProducts,
-      query: permissions.canManageProducts,
       create: permissions.canManageProducts
     }
   },
   ui: {
-    hideCreate: (args) => !permissions.canManageProducts(args)
+    hideCreate: (args) => !permissions.canManageProducts(args),
+    hideDelete: (args) => !permissions.canManageProducts(args)
   },
   fields: {
     productName: (0, import_fields.text)({
@@ -86,10 +90,21 @@ var Product_schema_default = Product;
 
 // schema/Category.schema.ts
 var import_core2 = require("@keystone-6/core");
-var import_access2 = require("@keystone-6/core/access");
+var import_access3 = require("@keystone-6/core/access");
 var import_fields2 = require("@keystone-6/core/fields");
 var Category = (0, import_core2.list)({
-  access: import_access2.allowAll,
+  access: {
+    operation: {
+      query: import_access3.allowAll,
+      update: permissions.canManageCategory,
+      delete: permissions.canManageCategory,
+      create: permissions.canManageCategory
+    }
+  },
+  ui: {
+    hideCreate: (args) => !permissions.canManageCategory(args),
+    hideDelete: (args) => !permissions.canManageCategory(args)
+  },
   fields: {
     categoryName: (0, import_fields2.text)({
       validation: { isRequired: true }
@@ -100,10 +115,22 @@ var Category_schema_default = Category;
 
 // schema/User.schema.ts
 var import_core3 = require("@keystone-6/core");
-var import_access3 = require("@keystone-6/core/access");
+var import_access5 = require("@keystone-6/core/access");
 var import_fields3 = require("@keystone-6/core/fields");
 var User = (0, import_core3.list)({
-  access: import_access3.allowAll,
+  access: {
+    operation: {
+      query: import_access5.allowAll,
+      // update: permissions.canUpdateOwnUser,
+      update: import_access5.allowAll,
+      delete: permissions.canManageUser,
+      create: permissions.canManageUser
+    }
+  },
+  ui: {
+    hideCreate: (args) => !permissions.canManageUser(args),
+    hideDelete: (args) => !permissions.canManageUser(args)
+  },
   fields: {
     name: (0, import_fields3.text)({
       validation: { isRequired: true }
@@ -125,13 +152,7 @@ var User = (0, import_core3.list)({
     role: (0, import_fields3.relationship)({
       ref: "Role.assignedTo",
       access: {
-        // create: permissions.canManagePeople,
-        // update: permissions.canManagePeople,
-      },
-      ui: {
-        itemView: {
-          // fieldMode: args => (permissions.canManagePeople(args) ? 'edit' : 'read'),
-        }
+        update: permissions.canManageUser
       }
     })
   }
@@ -140,29 +161,24 @@ var User_schema_default = User;
 
 // schema/Role.schema.ts
 var import_core4 = require("@keystone-6/core");
-var import_access4 = require("@keystone-6/core/access");
 var import_fields4 = require("@keystone-6/core/fields");
 var Role = (0, import_core4.list)({
   access: {
-    operation: import_access4.allowAll
-    //   operation: {
-    //     ...allOperations(permissions.canManageRoles),
-    //     query: isSignedIn,
-    //   },
+    operation: {
+      query: permissions.canManageUser,
+      update: permissions.canManageUser,
+      delete: permissions.canManageUser,
+      create: permissions.canManageUser
+    }
   },
-  // ui: {
-  //   hideCreate: args => !permissions.canManageRoles(args),
-  //   hideDelete: args => !permissions.canManageRoles(args),
-  //   listView: {
-  //     initialColumns: ['name', 'assignedTo'],
-  //   },
-  //   itemView: {
-  //     defaultFieldMode: args => (permissions.canManageRoles(args) ? 'edit' : 'read'),
-  //   },
-  // },
+  ui: {
+    hideCreate: (args) => !permissions.canManageUser(args)
+  },
   fields: {
     name: (0, import_fields4.text)({ validation: { isRequired: true } }),
     canManageProducts: (0, import_fields4.checkbox)({ defaultValue: false }),
+    canManageUser: (0, import_fields4.checkbox)({ defaultValue: false }),
+    canManageCategory: (0, import_fields4.checkbox)({ defaultValue: false }),
     assignedTo: (0, import_fields4.relationship)({
       ref: "User.role",
       many: true,
@@ -202,6 +218,8 @@ var { withAuth } = (0, import_auth.createAuth)({
       id
       name
       canManageProducts
+      canManageUser
+      canManageCategory
     }
   `,
   secretField: "userPassword",
@@ -216,7 +234,9 @@ var { withAuth } = (0, import_auth.createAuth)({
       role: {
         create: {
           name: "Admin",
-          canManageProducts: true
+          canManageProducts: true,
+          canManageUser: true,
+          canManageCategory: true
         }
       }
     }

@@ -1,9 +1,23 @@
 import { list } from "@keystone-6/core";
 import { allowAll } from "@keystone-6/core/access";
 import { password, relationship, text } from "@keystone-6/core/fields";
+import { permissions } from "../auth/access";
 
 const User = list({
-  access: allowAll,
+  access: {
+    operation: {
+      query: allowAll,
+      // update: permissions.canUpdateOwnUser,
+      update: allowAll,
+      delete: permissions.canManageUser,
+      create: permissions.canManageUser,
+    },
+  },
+
+  ui: {
+    hideCreate: (args) => !permissions.canManageUser(args),
+    hideDelete: (args) => !permissions.canManageUser(args),
+  },
 
   fields: {
     name: text({
@@ -26,13 +40,7 @@ const User = list({
     role: relationship({
       ref: "Role.assignedTo",
       access: {
-        // create: permissions.canManagePeople,
-        // update: permissions.canManagePeople,
-      },
-      ui: {
-        itemView: {
-          // fieldMode: args => (permissions.canManagePeople(args) ? 'edit' : 'read'),
-        },
+        update: permissions.canManageUser,
       },
     }),
   },

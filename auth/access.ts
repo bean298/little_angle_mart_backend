@@ -1,3 +1,5 @@
+import { session } from "../auth";
+
 // Create the object Session: data sent back from database
 export type Session = {
   itemId: string;
@@ -8,6 +10,9 @@ export type Session = {
       id: string;
       name: string;
       canManageProducts: boolean;
+      canManageUser: boolean;
+      canManageCategory: boolean;
+      canUpdateOwnUser: boolean;
     };
   };
 };
@@ -32,6 +37,10 @@ export function isSignedIn({ session }: AccessArgs) {
 export const permissions = {
   canManageProducts: ({ session }: AccessArgs) =>
     session?.data.role?.canManageProducts ?? false,
+  canManageUser: ({ session }: AccessArgs) =>
+    session?.data.role?.canManageProducts ?? false,
+  canManageCategory: ({ session }: AccessArgs) =>
+    session?.data.role?.canManageCategory ?? false,
 };
 
 /*
@@ -44,5 +53,20 @@ export const rules = {
     if (!session) return false;
 
     if (session.data.role?.canManageProducts) return true;
+  },
+  canManageUser: ({ session }: AccessArgs) => {
+    if (!session) return false;
+
+    if (session.data.role?.canManageUser) return true;
+  },
+  canManageCategory: ({ session }: AccessArgs) => {
+    if (!session) return false;
+
+    if (session.data.role?.canManageCategory) return true;
+  },
+  canUpdateOwnUser: ({ session }: AccessArgs) => {
+    if (!session) return false;
+
+    return { id: { equals: session.itemId } };
   },
 };

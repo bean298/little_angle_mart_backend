@@ -9,14 +9,16 @@ import { permissions } from "../auth/access";
 const Product = list({
   access: {
     operation: {
+      query: allowAll,
       update: permissions.canManageProducts,
       delete: permissions.canManageProducts,
-      query: permissions.canManageProducts,
       create: permissions.canManageProducts,
     },
   },
+
   ui: {
     hideCreate: (args) => !permissions.canManageProducts(args),
+    hideDelete: (args) => !permissions.canManageProducts(args),
   },
 
   fields: {
