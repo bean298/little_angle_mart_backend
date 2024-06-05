@@ -17,13 +17,19 @@ const Product = list({
   },
 
   ui: {
-    hideCreate: (args) => !permissions.canManageProducts(args),
+    hideCreate: (args) => {
+      console.log({ args });
+      console.log(args.session.data);
+
+      return !permissions.canManageProducts(args);
+    },
     hideDelete: (args) => !permissions.canManageProducts(args),
   },
 
   fields: {
     productName: text({
       label: "Tên sản phẩm",
+      validation: { isRequired: true },
     }),
     productDescription: document({
       label: "Miêu tả về sản phẩm",
@@ -36,7 +42,7 @@ const Product = list({
     }),
     productCategory: relationship({
       label: "Nhóm sản phẩm",
-      ref: "Category.productOfCategory",
+      ref: "Category",
     }),
     productPrice: float({
       label: "Giá sản phẩm",

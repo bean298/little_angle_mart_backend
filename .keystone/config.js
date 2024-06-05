@@ -51,12 +51,17 @@ var Product = (0, import_core.list)({
     }
   },
   ui: {
-    hideCreate: (args) => !permissions.canManageProducts(args),
+    hideCreate: (args) => {
+      console.log({ args });
+      console.log(args.session.data);
+      return !permissions.canManageProducts(args);
+    },
     hideDelete: (args) => !permissions.canManageProducts(args)
   },
   fields: {
     productName: (0, import_fields.text)({
-      label: "T\xEAn s\u1EA3n ph\u1EA9m"
+      label: "T\xEAn s\u1EA3n ph\u1EA9m",
+      validation: { isRequired: true }
     }),
     productDescription: (0, import_fields_document.document)({
       label: "Mi\xEAu t\u1EA3 v\u1EC1 s\u1EA3n ph\u1EA9m",
@@ -69,7 +74,7 @@ var Product = (0, import_core.list)({
     }),
     productCategory: (0, import_fields.relationship)({
       label: "Nh\xF3m s\u1EA3n ph\u1EA9m",
-      ref: "Category.productOfCategory"
+      ref: "Category"
     }),
     productPrice: (0, import_fields.float)({
       label: "Gi\xE1 s\u1EA3n ph\u1EA9m",
@@ -106,15 +111,15 @@ var Category = (0, import_core2.list)({
     hideDelete: (args) => !permissions.canManageCategory(args)
   },
   fields: {
-    categoryName: (0, import_fields2.text)({
+    name: (0, import_fields2.text)({
       label: "Lo\u1EA1i s\u1EA3n ph\u1EA9m",
       validation: { isRequired: true }
-    }),
-    productOfCategory: (0, import_fields2.relationship)({
-      label: "C\xE1c s\u1EA3n ph\u1EA9m c\xF3 trong lo\u1EA1i n\xE0y",
-      ref: "Product.productCategory",
-      many: true
     })
+    // productOfCategory: relationship({
+    //   label: "Các sản phẩm có trong loại này",
+    //   ref: "Product.productCategory",
+    //   many: true,
+    // }),
   }
 });
 var Category_schema_default = Category;
@@ -206,7 +211,7 @@ var Role = (0, import_core4.list)({
       defaultValue: false
     }),
     assignedTo: (0, import_fields4.relationship)({
-      label: "Ph\xE2n c\xF4ng quy\u1EC1n h\u1EA1n",
+      label: "Ng\u01B0\u1EDDi d\xF9ng",
       ref: "User.role",
       many: true,
       ui: {
@@ -302,7 +307,10 @@ var keystone_default = withAuth(
       //   for more information on what database might be appropriate for you
       //   see https://keystonejs.com/docs/guides/choosing-a-database#title
       provider: "sqlite",
-      url: "file:./keystone.db"
+      url: "file:./keystone.db",
+      onConnect: async (session2) => {
+        console.log({ session: session2 });
+      }
     },
     lists,
     session

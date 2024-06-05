@@ -37,9 +37,9 @@ model User {
 }
 
 model Category {
-  id                String    @id @default(cuid())
-  categoryName      String    @default("")
-  productOfCategory Product[] @relation("Product_productCategory")
+  id                           String    @id @default(cuid())
+  name                         String    @default("")
+  from_Product_productCategory Product[] @relation("Product_productCategory")
 }
 
 model Role {

@@ -35,7 +35,7 @@ const Role = list({
       defaultValue: false,
     }),
     assignedTo: relationship({
-      label: "Phân công quyền hạn",
+      label: "Người dùng",
       ref: "User.role",
       many: true,
       ui: {

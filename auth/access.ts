@@ -26,6 +26,8 @@ type AccessArgs = {
 // Data sent back from database: Ex: if user exists return true else false
 // If session in AccessArgs not null
 export function isSignedIn({ session }: AccessArgs) {
+  console.log({ session });
+
   return Boolean(session);
 }
 
@@ -34,9 +36,12 @@ export function isSignedIn({ session }: AccessArgs) {
     permission boolean set to true
   */
 //  The permission to manageProduct: if canManageProducts false - cant mange product
+// perr: object có method
+// permission.canManageProducts
 export const permissions = {
-  canManageProducts: ({ session }: AccessArgs) =>
-    session?.data.role?.canManageProducts ?? false,
+  canManageProducts: (
+    { session }: AccessArgs //được truyền vào 1 tso trong do co key la session
+  ) => session?.data.role?.canManageProducts ?? false,
   canManageUser: ({ session }: AccessArgs) =>
     session?.data.role?.canManageProducts ?? false,
   canManageCategory: ({ session }: AccessArgs) =>

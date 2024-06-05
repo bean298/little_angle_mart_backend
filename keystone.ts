@@ -21,6 +21,9 @@ export default withAuth(
       //   see https://keystonejs.com/docs/guides/choosing-a-database#title
       provider: "sqlite",
       url: "file:./keystone.db",
+      onConnect: async (session) => {
+        console.log({ session });
+      },
     },
     lists,
     session,

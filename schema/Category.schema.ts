@@ -19,15 +19,15 @@ const Category = list({
   },
 
   fields: {
-    categoryName: text({
+    name: text({
       label: "Loại sản phẩm",
       validation: { isRequired: true },
     }),
-    productOfCategory: relationship({
-      label: "Các sản phẩm có trong loại này",
-      ref: "Product.productCategory",
-      many: true,
-    }),
+    // productOfCategory: relationship({
+    //   label: "Các sản phẩm có trong loại này",
+    //   ref: "Product.productCategory",
+    //   many: true,
+    // }),
   },
 });
 

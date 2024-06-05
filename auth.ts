@@ -29,6 +29,7 @@ if (!sessionSecret && process.env.NODE_ENV !== "production") {
 }
 
 // withAuth is a function we can use to wrap our base configuration
+//Data được database trả về gồm listKey, itemId và bộ data đính kèm là session data: trả về để phục vụ việc auth
 const { withAuth } = createAuth({
   listKey: "User",
   identityField: "userEmail",

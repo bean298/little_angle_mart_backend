@@ -247,9 +247,7 @@ input RoleRelateToOneForCreateInput {
 
 type Category {
   id: ID!
-  categoryName: String
-  productOfCategory(where: ProductWhereInput! = {}, orderBy: [ProductOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ProductWhereUniqueInput): [Product!]
-  productOfCategoryCount(where: ProductWhereInput! = {}): Int
+  name: String
 }
 
 input CategoryWhereUniqueInput {
@@ -261,31 +259,16 @@ input CategoryWhereInput {
   OR: [CategoryWhereInput!]
   NOT: [CategoryWhereInput!]
   id: IDFilter
-  categoryName: StringFilter
-  productOfCategory: ProductManyRelationFilter
-}
-
-input ProductManyRelationFilter {
-  every: ProductWhereInput
-  some: ProductWhereInput
-  none: ProductWhereInput
+  name: StringFilter
 }
 
 input CategoryOrderByInput {
   id: OrderDirection
-  categoryName: OrderDirection
+  name: OrderDirection
 }
 
 input CategoryUpdateInput {
-  categoryName: String
-  productOfCategory: ProductRelateToManyForUpdateInput
-}
-
-input ProductRelateToManyForUpdateInput {
-  disconnect: [ProductWhereUniqueInput!]
-  set: [ProductWhereUniqueInput!]
-  create: [ProductCreateInput!]
-  connect: [ProductWhereUniqueInput!]
+  name: String
 }
 
 input CategoryUpdateArgs {
@@ -294,13 +277,7 @@ input CategoryUpdateArgs {
 }
 
 input CategoryCreateInput {
-  categoryName: String
-  productOfCategory: ProductRelateToManyForCreateInput
-}
-
-input ProductRelateToManyForCreateInput {
-  create: [ProductCreateInput!]
-  connect: [ProductWhereUniqueInput!]
+  name: String
 }
 
 type Role {
