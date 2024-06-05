@@ -20,9 +20,10 @@ const Product = list({
     hideCreate: (args) => {
       console.log({ args });
       console.log(args.session.data);
-
+      
       return !permissions.canManageProducts(args);
     },
+    // hideCreate: (args) => !permissions.canManageProducts(args),
     hideDelete: (args) => !permissions.canManageProducts(args),
   },
 

@@ -34,10 +34,28 @@ var import_cloudinary = require("@keystone-6/cloudinary");
 var import_config = require("dotenv/config");
 
 // auth/access.ts
+function isSignedIn({ session: session2 }) {
+  console.log({ session: session2 });
+  return Boolean(session2);
+}
 var permissions = {
   canManageProducts: ({ session: session2 }) => session2?.data.role?.canManageProducts ?? false,
   canManageUser: ({ session: session2 }) => session2?.data.role?.canManageProducts ?? false,
   canManageCategory: ({ session: session2 }) => session2?.data.role?.canManageCategory ?? false
+};
+var rules = {
+  canReadPeople: ({ session: session2 }) => {
+    if (!session2)
+      return false;
+    if (session2.data.role?.canManageUser)
+      return true;
+    return { id: { equals: session2.itemId } };
+  },
+  canUpdateOwnUser: ({ session: session2 }) => {
+    if (!session2)
+      return false;
+    return { id: { equals: session2.itemId } };
+  }
 };
 
 // schema/Product.schema.ts
@@ -56,6 +74,7 @@ var Product = (0, import_core.list)({
       console.log(args.session.data);
       return !permissions.canManageProducts(args);
     },
+    // hideCreate: (args) => !permissions.canManageProducts(args),
     hideDelete: (args) => !permissions.canManageProducts(args)
   },
   fields: {
@@ -131,11 +150,13 @@ var import_fields3 = require("@keystone-6/core/fields");
 var User = (0, import_core3.list)({
   access: {
     operation: {
-      query: import_access5.allowAll,
-      update: permissions.canManageUser,
-      // update: allowAll,
+      ...(0, import_access5.allOperations)(isSignedIn),
       delete: permissions.canManageUser,
       create: permissions.canManageUser
+    },
+    filter: {
+      query: rules.canReadPeople
+      // update: rules.canUpdateOwnUser,
     }
   },
   ui: {

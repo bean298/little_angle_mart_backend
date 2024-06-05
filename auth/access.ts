@@ -12,7 +12,6 @@ export type Session = {
       canManageProducts: boolean;
       canManageUser: boolean;
       canManageCategory: boolean;
-      canUpdateOwnUser: boolean;
     };
   };
 };
@@ -54,24 +53,18 @@ export const permissions = {
   */
 //
 export const rules = {
-  canManageProducts: ({ session }: AccessArgs) => {
-    if (!session) return false;
+  canReadPeople: ({ session }: AccessArgs) => {
+    if (!session) return false
 
-    if (session.data.role?.canManageProducts) return true;
-  },
-  canManageUser: ({ session }: AccessArgs) => {
-    if (!session) return false;
+    // can see everyone?
+    if (session.data.role?.canManageUser) return true
 
-    if (session.data.role?.canManageUser) return true;
-  },
-  canManageCategory: ({ session }: AccessArgs) => {
-    if (!session) return false;
-
-    if (session.data.role?.canManageCategory) return true;
+    // default to only seeing yourself
+    return { id: { equals: session.itemId } }
   },
   canUpdateOwnUser: ({ session }: AccessArgs) => {
     if (!session) return false;
-
+    // default to only updating yourself
     return { id: { equals: session.itemId } };
   },
 };
