@@ -3,6 +3,7 @@ import Category from "./Category.schema";
 import User from "./User.schema";
 import Role from "./Role.schema";
 import Order from "./Order.schema";
+import Cart from "./Cart.schema";
 
 export const lists = {
   Product,
@@ -10,4 +11,5 @@ export const lists = {
   Category,
   Role,
   Order,
+  Cart,
 };

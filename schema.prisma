@@ -24,14 +24,15 @@ model Product {
 }
 
 model User {
-  id           String  @id @default(cuid())
-  name         String  @default("")
-  userEmail    String  @unique @default("")
-  userPassword String
-  userPhone    String  @default("")
-  userAddress  String  @default("")
-  role         Role?   @relation("User_role", fields: [roleId], references: [id])
-  roleId       String? @map("role")
+  id               String  @id @default(cuid())
+  name             String  @default("")
+  userEmail        String  @unique @default("")
+  userPassword     String
+  userPhone        String  @default("")
+  userAddress      String  @default("")
+  role             Role?   @relation("User_role", fields: [roleId], references: [id])
+  roleId           String? @map("role")
+  from_Cart_ofUser Cart[]  @relation("Cart_ofUser")
 
   @@index([roleId])
 }
@@ -53,4 +54,13 @@ model Role {
 
 model Order {
   id String @id @default(cuid())
+}
+
+model Cart {
+  id        String    @id @default(cuid())
+  ofUser    User?     @relation("Cart_ofUser", fields: [ofUserId], references: [id])
+  ofUserId  String?   @map("ofUser")
+  createdAt DateTime? @default(now())
+
+  @@index([ofUserId])
 }

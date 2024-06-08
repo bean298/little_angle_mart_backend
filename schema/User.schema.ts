@@ -7,13 +7,12 @@ const User = list({
   access: {
     operation: {
       ...allOperations(isSignedIn),
-      delete: permissions.canManageUser,
       create: permissions.canManageUser,
+      delete: permissions.canManageUser,
     },
     filter: {
       query: rules.canReadPeople,
-      // update: rules.canUpdateOwnUser,
-    }
+    },
   },
 
   ui: {
@@ -49,7 +48,10 @@ const User = list({
       label: "Quyền hạn",
       ref: "Role.assignedTo",
       ui: {
-        itemView: { fieldMode: "read" },
+        itemView: {
+          fieldMode: (args) =>
+            permissions.canManageUser(args) ? "edit" : "read",
+        },
       },
     }),
   },

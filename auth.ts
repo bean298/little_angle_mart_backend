@@ -29,7 +29,7 @@ if (!sessionSecret && process.env.NODE_ENV !== "production") {
 }
 
 // withAuth is a function we can use to wrap our base configuration
-//Data được database trả về gồm listKey, itemId và bộ data đính kèm là session data: trả về để phục vụ việc auth
+// Data đc db trả về gồm listKey, itemId và bộ data đính kèm là sessionData (phục vụ cho việc auth)
 const { withAuth } = createAuth({
   listKey: "User",
   identityField: "userEmail",
@@ -52,7 +52,7 @@ const { withAuth } = createAuth({
   // WARNING: remove initFirstItem functionality in production
   //   see https://keystonejs.com/docs/config/auth#init-first-item for more
   initFirstItem: {
-    // if there are no items in the database, by configuring this field
+    // if there are no items in the db, by configuring this field
     //   you are asking the Keystone AdminUI to create a new user
     //   providing inputs for these fields
     fields: ["name", "userEmail", "userPassword", "userPhone"],

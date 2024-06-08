@@ -7,14 +7,15 @@ const Role = list({
   access: {
     operation: {
       query: allowAll,
+      create: permissions.canManageUser,
       update: permissions.canManageUser,
       delete: permissions.canManageUser,
-      create: permissions.canManageUser,
     },
   },
 
   ui: {
     hideCreate: (args) => !permissions.canManageUser(args),
+    hideDelete: (args) => !permissions.canManageUser(args),
   },
 
   fields: {

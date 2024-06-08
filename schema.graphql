@@ -377,6 +377,69 @@ input OrderOrderByInput {
   id: OrderDirection
 }
 
+type Cart {
+  id: ID!
+  ofUser: User
+  createdAt: DateTime
+}
+
+scalar DateTime @specifiedBy(url: "https://datatracker.ietf.org/doc/html/rfc3339#section-5.6")
+
+input CartWhereUniqueInput {
+  id: ID
+}
+
+input CartWhereInput {
+  AND: [CartWhereInput!]
+  OR: [CartWhereInput!]
+  NOT: [CartWhereInput!]
+  id: IDFilter
+  ofUser: UserWhereInput
+  createdAt: DateTimeNullableFilter
+}
+
+input DateTimeNullableFilter {
+  equals: DateTime
+  in: [DateTime!]
+  notIn: [DateTime!]
+  lt: DateTime
+  lte: DateTime
+  gt: DateTime
+  gte: DateTime
+  not: DateTimeNullableFilter
+}
+
+input CartOrderByInput {
+  id: OrderDirection
+  createdAt: OrderDirection
+}
+
+input CartUpdateInput {
+  ofUser: UserRelateToOneForUpdateInput
+  createdAt: DateTime
+}
+
+input UserRelateToOneForUpdateInput {
+  create: UserCreateInput
+  connect: UserWhereUniqueInput
+  disconnect: Boolean
+}
+
+input CartUpdateArgs {
+  where: CartWhereUniqueInput!
+  data: CartUpdateInput!
+}
+
+input CartCreateInput {
+  ofUser: UserRelateToOneForCreateInput
+  createdAt: DateTime
+}
+
+input UserRelateToOneForCreateInput {
+  create: UserCreateInput
+  connect: UserWhereUniqueInput
+}
+
 """
 The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
 """
@@ -409,6 +472,12 @@ type Mutation {
   deleteRoles(where: [RoleWhereUniqueInput!]!): [Role]
   deleteOrder(where: OrderWhereUniqueInput!): Order
   deleteOrders(where: [OrderWhereUniqueInput!]!): [Order]
+  createCart(data: CartCreateInput!): Cart
+  createCarts(data: [CartCreateInput!]!): [Cart]
+  updateCart(where: CartWhereUniqueInput!, data: CartUpdateInput!): Cart
+  updateCarts(data: [CartUpdateArgs!]!): [Cart]
+  deleteCart(where: CartWhereUniqueInput!): Cart
+  deleteCarts(where: [CartWhereUniqueInput!]!): [Cart]
   endSession: Boolean!
   authenticateUserWithPassword(userEmail: String!, userPassword: String!): UserAuthenticationWithPasswordResult
   createInitialUser(data: CreateInitialUserInput!): UserAuthenticationWithPasswordSuccess!
@@ -448,6 +517,9 @@ type Query {
   orders(where: OrderWhereInput! = {}, orderBy: [OrderOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: OrderWhereUniqueInput): [Order!]
   order(where: OrderWhereUniqueInput!): Order
   ordersCount(where: OrderWhereInput! = {}): Int
+  carts(where: CartWhereInput! = {}, orderBy: [CartOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: CartWhereUniqueInput): [Cart!]
+  cart(where: CartWhereUniqueInput!): Cart
+  cartsCount(where: CartWhereInput! = {}): Int
   keystone: KeystoneMeta!
   authenticatedItem: AuthenticatedItem
 }

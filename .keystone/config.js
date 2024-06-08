@@ -23,7 +23,7 @@ __export(keystone_exports, {
   default: () => keystone_default
 });
 module.exports = __toCommonJS(keystone_exports);
-var import_core6 = require("@keystone-6/core");
+var import_core7 = require("@keystone-6/core");
 
 // schema/Product.schema.ts
 var import_core = require("@keystone-6/core");
@@ -35,7 +35,6 @@ var import_config = require("dotenv/config");
 
 // auth/access.ts
 function isSignedIn({ session: session2 }) {
-  console.log({ session: session2 });
   return Boolean(session2);
 }
 var permissions = {
@@ -49,11 +48,6 @@ var rules = {
       return false;
     if (session2.data.role?.canManageUser)
       return true;
-    return { id: { equals: session2.itemId } };
-  },
-  canUpdateOwnUser: ({ session: session2 }) => {
-    if (!session2)
-      return false;
     return { id: { equals: session2.itemId } };
   }
 };
@@ -134,11 +128,6 @@ var Category = (0, import_core2.list)({
       label: "Lo\u1EA1i s\u1EA3n ph\u1EA9m",
       validation: { isRequired: true }
     })
-    // productOfCategory: relationship({
-    //   label: "Các sản phẩm có trong loại này",
-    //   ref: "Product.productCategory",
-    //   many: true,
-    // }),
   }
 });
 var Category_schema_default = Category;
@@ -151,12 +140,11 @@ var User = (0, import_core3.list)({
   access: {
     operation: {
       ...(0, import_access5.allOperations)(isSignedIn),
-      delete: permissions.canManageUser,
-      create: permissions.canManageUser
+      create: permissions.canManageUser,
+      delete: permissions.canManageUser
     },
     filter: {
       query: rules.canReadPeople
-      // update: rules.canUpdateOwnUser,
     }
   },
   ui: {
@@ -191,7 +179,9 @@ var User = (0, import_core3.list)({
       label: "Quy\u1EC1n h\u1EA1n",
       ref: "Role.assignedTo",
       ui: {
-        itemView: { fieldMode: "read" }
+        itemView: {
+          fieldMode: (args) => permissions.canManageUser(args) ? "edit" : "read"
+        }
       }
     })
   }
@@ -206,13 +196,14 @@ var Role = (0, import_core4.list)({
   access: {
     operation: {
       query: import_access7.allowAll,
+      create: permissions.canManageUser,
       update: permissions.canManageUser,
-      delete: permissions.canManageUser,
-      create: permissions.canManageUser
+      delete: permissions.canManageUser
     }
   },
   ui: {
-    hideCreate: (args) => !permissions.canManageUser(args)
+    hideCreate: (args) => !permissions.canManageUser(args),
+    hideDelete: (args) => !permissions.canManageUser(args)
   },
   fields: {
     name: (0, import_fields4.text)({
@@ -250,14 +241,47 @@ var Order = (0, import_core5.list)({
   access: {
     operation: {
       query: import_access9.allowAll,
-      update: import_access9.allowAll,
-      delete: import_access9.allowAll,
-      create: import_access9.allowAll
+      update: permissions.canManageProducts,
+      delete: permissions.canManageProducts,
+      create: permissions.canManageProducts
     }
+  },
+  ui: {
+    hideCreate: (args) => !permissions.canManageProducts(args),
+    hideDelete: (args) => !permissions.canManageProducts(args)
   },
   fields: {}
 });
 var Order_schema_default = Order;
+
+// schema/Cart.schema.ts
+var import_core6 = require("@keystone-6/core");
+var import_access11 = require("@keystone-6/core/access");
+var import_fields5 = require("@keystone-6/core/fields");
+var Cart = (0, import_core6.list)({
+  access: {
+    operation: {
+      query: import_access11.allowAll,
+      update: permissions.canManageProducts,
+      delete: permissions.canManageProducts,
+      create: permissions.canManageProducts
+    }
+  },
+  ui: {
+    hideCreate: (args) => !permissions.canManageProducts(args),
+    hideDelete: (args) => !permissions.canManageProducts(args)
+  },
+  fields: {
+    ofUser: (0, import_fields5.relationship)({
+      label: "\u0110\u01A1n h\xE0ng c\u1EE7a",
+      ref: "User"
+    }),
+    createdAt: (0, import_fields5.timestamp)({
+      defaultValue: { kind: "now" }
+    })
+  }
+});
+var Cart_schema_default = Cart;
 
 // schema/index.ts
 var lists = {
@@ -265,7 +289,8 @@ var lists = {
   User: User_schema_default,
   Category: Category_schema_default,
   Role: Role_schema_default,
-  Order: Order_schema_default
+  Order: Order_schema_default,
+  Cart: Cart_schema_default
 };
 
 // auth.ts
@@ -296,7 +321,7 @@ var { withAuth } = (0, import_auth.createAuth)({
   // WARNING: remove initFirstItem functionality in production
   //   see https://keystonejs.com/docs/config/auth#init-first-item for more
   initFirstItem: {
-    // if there are no items in the database, by configuring this field
+    // if there are no items in the db, by configuring this field
     //   you are asking the Keystone AdminUI to create a new user
     //   providing inputs for these fields
     fields: ["name", "userEmail", "userPassword", "userPhone"],
@@ -322,16 +347,16 @@ var session = (0, import_session.statelessSessions)({
 
 // keystone.ts
 var keystone_default = withAuth(
-  (0, import_core6.config)({
+  (0, import_core7.config)({
     db: {
       // we're using sqlite for the fastest startup experience
       //   for more information on what database might be appropriate for you
       //   see https://keystonejs.com/docs/guides/choosing-a-database#title
       provider: "sqlite",
-      url: "file:./keystone.db",
-      onConnect: async (session2) => {
-        console.log({ session: session2 });
-      }
+      url: "file:./keystone.db"
+      // onConnect: async (session) => {
+      //   console.log({ session });
+      // },
     },
     lists,
     session

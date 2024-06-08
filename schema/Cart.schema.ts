@@ -1,9 +1,9 @@
 import { list } from "@keystone-6/core";
 import { allowAll } from "@keystone-6/core/access";
-import { text } from "@keystone-6/core/fields";
+import { text, relationship, timestamp } from "@keystone-6/core/fields";
 import { permissions } from "../auth/access";
 
-const Order = list({
+const Cart = list({
   access: {
     operation: {
       query: allowAll,
@@ -18,7 +18,15 @@ const Order = list({
     hideDelete: (args) => !permissions.canManageProducts(args),
   },
 
-  fields: {},
+  fields: {
+    ofUser: relationship({
+      label: "Đơn hàng của",
+      ref: "User",
+    }),
+    createdAt: timestamp({
+      defaultValue: { kind: "now" },
+    }),
+  },
 });
 
-export default Order;
+export default Cart;

@@ -23,11 +23,6 @@ const Category = list({
       label: "Loại sản phẩm",
       validation: { isRequired: true },
     }),
-    // productOfCategory: relationship({
-    //   label: "Các sản phẩm có trong loại này",
-    //   ref: "Product.productCategory",
-    //   many: true,
-    // }),
   },
 });
 
