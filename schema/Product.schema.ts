@@ -30,7 +30,33 @@ const Product = list({
   fields: {
     productName: text({
       label: "Tên sản phẩm",
-      validation: { isRequired: true },
+      validation: {
+        isRequired: true,
+        length: { min: 5, max: 50 },
+      },
+      hooks: {
+        validateInput: async ({
+          resolvedData,
+          addValidationError,
+          context,
+          item,
+        }) => {
+          if (resolvedData.productName) {
+            const existingProducts = await context.query.Product.findMany({
+              where: { productName: { equals: resolvedData.productName } },
+              query: "id",
+            });
+
+            if (
+              existingProducts.length > 0 &&
+              (!item ||
+                existingProducts.some((product) => product.id !== item.id))
+            ) {
+              addValidationError("Tên sản phẩm đã tồn tại.");
+            }
+          }
+        },
+      },
     }),
     productDescription: document({
       label: "Miêu tả về sản phẩm",

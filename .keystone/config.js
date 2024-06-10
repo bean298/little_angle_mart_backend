@@ -39,8 +39,7 @@ function isSignedIn({ session: session2 }) {
 }
 var permissions = {
   canManageProducts: ({ session: session2 }) => session2?.data.role?.canManageProducts ?? false,
-  canManageUser: ({ session: session2 }) => session2?.data.role?.canManageProducts ?? false,
-  canManageCategory: ({ session: session2 }) => session2?.data.role?.canManageCategory ?? false
+  canManageUser: ({ session: session2 }) => session2?.data.role?.canManageUser ?? false
 };
 var rules = {
   canReadPeople: ({ session: session2 }) => {
@@ -74,7 +73,28 @@ var Product = (0, import_core.list)({
   fields: {
     productName: (0, import_fields.text)({
       label: "T\xEAn s\u1EA3n ph\u1EA9m",
-      validation: { isRequired: true }
+      validation: {
+        isRequired: true,
+        length: { min: 5, max: 50 }
+      },
+      hooks: {
+        validateInput: async ({
+          resolvedData,
+          addValidationError,
+          context,
+          item
+        }) => {
+          if (resolvedData.productName) {
+            const existingProducts = await context.query.Product.findMany({
+              where: { productName: { equals: resolvedData.productName } },
+              query: "id"
+            });
+            if (existingProducts.length > 0 && (!item || existingProducts.some((product) => product.id !== item.id))) {
+              addValidationError("T\xEAn s\u1EA3n ph\u1EA9m \u0111\xE3 t\u1ED3n t\u1EA1i.");
+            }
+          }
+        }
+      }
     }),
     productDescription: (0, import_fields_document.document)({
       label: "Mi\xEAu t\u1EA3 v\u1EC1 s\u1EA3n ph\u1EA9m",
@@ -114,14 +134,14 @@ var Category = (0, import_core2.list)({
   access: {
     operation: {
       query: import_access3.allowAll,
-      update: permissions.canManageCategory,
-      delete: permissions.canManageCategory,
-      create: permissions.canManageCategory
+      update: permissions.canManageProducts,
+      delete: permissions.canManageProducts,
+      create: permissions.canManageProducts
     }
   },
   ui: {
-    hideCreate: (args) => !permissions.canManageCategory(args),
-    hideDelete: (args) => !permissions.canManageCategory(args)
+    hideCreate: (args) => !permissions.canManageProducts(args),
+    hideDelete: (args) => !permissions.canManageProducts(args)
   },
   fields: {
     name: (0, import_fields2.text)({
@@ -158,7 +178,13 @@ var User = (0, import_core3.list)({
     }),
     userEmail: (0, import_fields3.text)({
       label: "Email",
-      validation: { isRequired: true },
+      validation: {
+        isRequired: true,
+        match: {
+          regex: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+          explanation: "Email kh\xF4ng h\u1EE3p l\u1EC7"
+        }
+      },
       isIndexed: "unique"
     }),
     userPassword: (0, import_fields3.password)({
@@ -170,7 +196,13 @@ var User = (0, import_core3.list)({
     }),
     userPhone: (0, import_fields3.text)({
       label: "S\u1ED1 \u0111i\u1EC7n tho\u1EA1i",
-      validation: { isRequired: true }
+      validation: {
+        isRequired: true,
+        match: {
+          regex: /^\d{10}$/,
+          explanation: "S\u1ED1 \u0111i\u1EC7n tho\u1EA1i ph\u1EA3i c\xF3 10 s\u1ED1"
+        }
+      }
     }),
     userAddress: (0, import_fields3.text)({
       label: "\u0110\u1ECBa ch\u1EC9"
@@ -218,10 +250,6 @@ var Role = (0, import_core4.list)({
       label: "Qu\u1EA3n l\xFD ng\u01B0\u1EDDi d\xF9ng",
       defaultValue: false
     }),
-    canManageCategory: (0, import_fields4.checkbox)({
-      label: "Qu\u1EA3n l\xFD lo\u1EA1i s\u1EA3n ph\u1EA9m",
-      defaultValue: false
-    }),
     assignedTo: (0, import_fields4.relationship)({
       label: "Ng\u01B0\u1EDDi d\xF9ng",
       ref: "User.role",
@@ -237,6 +265,7 @@ var Role_schema_default = Role;
 // schema/Order.schema.ts
 var import_core5 = require("@keystone-6/core");
 var import_access9 = require("@keystone-6/core/access");
+var import_fields5 = require("@keystone-6/core/fields");
 var Order = (0, import_core5.list)({
   access: {
     operation: {
@@ -250,14 +279,22 @@ var Order = (0, import_core5.list)({
     hideCreate: (args) => !permissions.canManageProducts(args),
     hideDelete: (args) => !permissions.canManageProducts(args)
   },
-  fields: {}
+  fields: {
+    quantity: (0, import_fields5.integer)({
+      label: "S\u1ED1 l\u01B0\u1EE3ng"
+    }),
+    createdAt: (0, import_fields5.timestamp)({
+      label: "Ng\xE0y \u0111\u1EB7t",
+      defaultValue: { kind: "now" }
+    })
+  }
 });
 var Order_schema_default = Order;
 
 // schema/Cart.schema.ts
 var import_core6 = require("@keystone-6/core");
 var import_access11 = require("@keystone-6/core/access");
-var import_fields5 = require("@keystone-6/core/fields");
+var import_fields6 = require("@keystone-6/core/fields");
 var Cart = (0, import_core6.list)({
   access: {
     operation: {
@@ -272,11 +309,12 @@ var Cart = (0, import_core6.list)({
     hideDelete: (args) => !permissions.canManageProducts(args)
   },
   fields: {
-    ofUser: (0, import_fields5.relationship)({
+    ofUser: (0, import_fields6.relationship)({
       label: "\u0110\u01A1n h\xE0ng c\u1EE7a",
       ref: "User"
     }),
-    createdAt: (0, import_fields5.timestamp)({
+    createdAt: (0, import_fields6.timestamp)({
+      label: "Ng\xE0y th\xEAm v\xE0o gi\u1ECF h\xE0ng",
       defaultValue: { kind: "now" }
     })
   }
@@ -314,7 +352,6 @@ var { withAuth } = (0, import_auth.createAuth)({
       name
       canManageProducts
       canManageUser
-      canManageCategory
     }
   `,
   secretField: "userPassword",

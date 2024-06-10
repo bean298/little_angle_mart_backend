@@ -27,7 +27,13 @@ const User = list({
     }),
     userEmail: text({
       label: "Email",
-      validation: { isRequired: true },
+      validation: {
+        isRequired: true,
+        match: {
+          regex: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+          explanation: "Email không hợp lệ",
+        },
+      },
       isIndexed: "unique",
     }),
     userPassword: password({
@@ -39,7 +45,13 @@ const User = list({
     }),
     userPhone: text({
       label: "Số điện thoại",
-      validation: { isRequired: true },
+      validation: {
+        isRequired: true,
+        match: {
+          regex: /^\d{10}$/,
+          explanation: "Số điện thoại phải có 10 số",
+        },
+      },
     }),
     userAddress: text({
       label: "Địa chỉ",

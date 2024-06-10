@@ -31,10 +31,6 @@ const Role = list({
       label: "Quản lý người dùng",
       defaultValue: false,
     }),
-    canManageCategory: checkbox({
-      label: "Quản lý loại sản phẩm",
-      defaultValue: false,
-    }),
     assignedTo: relationship({
       label: "Người dùng",
       ref: "User.role",

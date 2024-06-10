@@ -1,6 +1,6 @@
 import { list } from "@keystone-6/core";
 import { allowAll } from "@keystone-6/core/access";
-import { text } from "@keystone-6/core/fields";
+import { text, integer, timestamp } from "@keystone-6/core/fields";
 import { permissions } from "../auth/access";
 
 const Order = list({
@@ -18,7 +18,15 @@ const Order = list({
     hideDelete: (args) => !permissions.canManageProducts(args),
   },
 
-  fields: {},
+  fields: {
+    quantity: integer({
+      label: "Số lượng",
+    }),
+    createdAt: timestamp({
+      label: "Ngày đặt",
+      defaultValue: { kind: "now" },
+    }),
+  },
 });
 
 export default Order;

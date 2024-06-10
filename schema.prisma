@@ -48,12 +48,13 @@ model Role {
   name              String  @default("")
   canManageProducts Boolean @default(false)
   canManageUser     Boolean @default(false)
-  canManageCategory Boolean @default(false)
   assignedTo        User[]  @relation("User_role")
 }
 
 model Order {
-  id String @id @default(cuid())
+  id        String    @id @default(cuid())
+  quantity  Int?
+  createdAt DateTime? @default(now())
 }
 
 model Cart {

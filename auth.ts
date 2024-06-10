@@ -44,7 +44,6 @@ const { withAuth } = createAuth({
       name
       canManageProducts
       canManageUser
-      canManageCategory
     }
   `,
   secretField: "userPassword",

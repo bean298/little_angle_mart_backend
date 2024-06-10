@@ -24,6 +24,7 @@ const Cart = list({
       ref: "User",
     }),
     createdAt: timestamp({
+      label: "Ngày thêm vào giỏ hàng",
       defaultValue: { kind: "now" },
     }),
   },

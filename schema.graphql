@@ -285,7 +285,6 @@ type Role {
   name: String
   canManageProducts: Boolean
   canManageUser: Boolean
-  canManageCategory: Boolean
   assignedTo(where: UserWhereInput! = {}, orderBy: [UserOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: UserWhereUniqueInput): [User!]
   assignedToCount(where: UserWhereInput! = {}): Int
 }
@@ -302,7 +301,6 @@ input RoleWhereInput {
   name: StringFilter
   canManageProducts: BooleanFilter
   canManageUser: BooleanFilter
-  canManageCategory: BooleanFilter
   assignedTo: UserManyRelationFilter
 }
 
@@ -322,14 +320,12 @@ input RoleOrderByInput {
   name: OrderDirection
   canManageProducts: OrderDirection
   canManageUser: OrderDirection
-  canManageCategory: OrderDirection
 }
 
 input RoleUpdateInput {
   name: String
   canManageProducts: Boolean
   canManageUser: Boolean
-  canManageCategory: Boolean
   assignedTo: UserRelateToManyForUpdateInput
 }
 
@@ -349,7 +345,6 @@ input RoleCreateInput {
   name: String
   canManageProducts: Boolean
   canManageUser: Boolean
-  canManageCategory: Boolean
   assignedTo: UserRelateToManyForCreateInput
 }
 
@@ -360,7 +355,11 @@ input UserRelateToManyForCreateInput {
 
 type Order {
   id: ID!
+  quantity: Int
+  createdAt: DateTime
 }
+
+scalar DateTime @specifiedBy(url: "https://datatracker.ietf.org/doc/html/rfc3339#section-5.6")
 
 input OrderWhereUniqueInput {
   id: ID
@@ -371,10 +370,51 @@ input OrderWhereInput {
   OR: [OrderWhereInput!]
   NOT: [OrderWhereInput!]
   id: IDFilter
+  quantity: IntNullableFilter
+  createdAt: DateTimeNullableFilter
+}
+
+input IntNullableFilter {
+  equals: Int
+  in: [Int!]
+  notIn: [Int!]
+  lt: Int
+  lte: Int
+  gt: Int
+  gte: Int
+  not: IntNullableFilter
+}
+
+input DateTimeNullableFilter {
+  equals: DateTime
+  in: [DateTime!]
+  notIn: [DateTime!]
+  lt: DateTime
+  lte: DateTime
+  gt: DateTime
+  gte: DateTime
+  not: DateTimeNullableFilter
 }
 
 input OrderOrderByInput {
   id: OrderDirection
+  quantity: OrderDirection
+  createdAt: OrderDirection
+}
+
+input OrderUpdateInput {
+  quantity: Int
+  createdAt: DateTime
+}
+
+input OrderUpdateArgs {
+  where: OrderWhereUniqueInput!
+  data: OrderUpdateInput!
+}
+
+input OrderCreateInput {
+  quantity: Int
+  createdAt: DateTime
 }
 
 type Cart {
@@ -382,8 +422,6 @@ type Cart {
   ofUser: User
   createdAt: DateTime
 }
-
-scalar DateTime @specifiedBy(url: "https://datatracker.ietf.org/doc/html/rfc3339#section-5.6")
 
 input CartWhereUniqueInput {
   id: ID
@@ -396,17 +434,6 @@ input CartWhereInput {
   id: IDFilter
   ofUser: UserWhereInput
   createdAt: DateTimeNullableFilter
-}
-
-input DateTimeNullableFilter {
-  equals: DateTime
-  in: [DateTime!]
-  notIn: [DateTime!]
-  lt: DateTime
-  lte: DateTime
-  gt: DateTime
-  gte: DateTime
-  not: DateTimeNullableFilter
 }
 
 input CartOrderByInput {
@@ -470,6 +497,10 @@ type Mutation {
   updateRoles(data: [RoleUpdateArgs!]!): [Role]
   deleteRole(where: RoleWhereUniqueInput!): Role
   deleteRoles(where: [RoleWhereUniqueInput!]!): [Role]
+  createOrder(data: OrderCreateInput!): Order
+  createOrders(data: [OrderCreateInput!]!): [Order]
+  updateOrder(where: OrderWhereUniqueInput!, data: OrderUpdateInput!): Order
+  updateOrders(data: [OrderUpdateArgs!]!): [Order]
   deleteOrder(where: OrderWhereUniqueInput!): Order
   deleteOrders(where: [OrderWhereUniqueInput!]!): [Order]
   createCart(data: CartCreateInput!): Cart

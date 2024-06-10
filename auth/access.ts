@@ -9,7 +9,6 @@ export type Session = {
       name: string;
       canManageProducts: boolean;
       canManageUser: boolean;
-      canManageCategory: boolean;
     };
   };
 };
@@ -39,9 +38,7 @@ export const permissions = {
   canManageProducts: ({ session }: AccessArgs) =>
     session?.data.role?.canManageProducts ?? false,
   canManageUser: ({ session }: AccessArgs) =>
-    session?.data.role?.canManageProducts ?? false,
-  canManageCategory: ({ session }: AccessArgs) =>
-    session?.data.role?.canManageCategory ?? false,
+    session?.data.role?.canManageUser ?? false,
 };
 
 /*

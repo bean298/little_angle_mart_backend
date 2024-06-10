@@ -7,15 +7,15 @@ const Category = list({
   access: {
     operation: {
       query: allowAll,
-      update: permissions.canManageCategory,
-      delete: permissions.canManageCategory,
-      create: permissions.canManageCategory,
+      update: permissions.canManageProducts,
+      delete: permissions.canManageProducts,
+      create: permissions.canManageProducts,
     },
   },
 
   ui: {
-    hideCreate: (args) => !permissions.canManageCategory(args),
-    hideDelete: (args) => !permissions.canManageCategory(args),
+    hideCreate: (args) => !permissions.canManageProducts(args),
+    hideDelete: (args) => !permissions.canManageProducts(args),
   },
 
   fields: {
