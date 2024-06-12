@@ -52,6 +52,12 @@ var rules = {
 };
 
 // schema/Product.schema.ts
+var cloudinary = {
+  cloudName: process.env.CLOUDINARY_CLOUD_NAME ?? "",
+  apiKey: process.env.CLOUDINARY_API_KEY ?? "",
+  apiSecret: process.env.CLOUDINARY_API_SECRET ?? "",
+  folder: `/${process.env.CLOUDINARY_FOLDER ?? "little_angle_mart"}`
+};
 var Product = (0, import_core.list)({
   access: {
     operation: {
@@ -71,15 +77,15 @@ var Product = (0, import_core.list)({
     hideDelete: (args) => !permissions.canManageProducts(args)
   },
   fields: {
-    productName: (0, import_fields.text)({
+    name: (0, import_fields.text)({
       label: "T\xEAn s\u1EA3n ph\u1EA9m",
       validation: {
-        isRequired: true,
-        length: { min: 5, max: 50 }
+        isRequired: true
       },
       hooks: {
         validateInput: async ({
           resolvedData,
+          //Xử lý input data
           addValidationError,
           context,
           item
@@ -105,22 +111,17 @@ var Product = (0, import_core.list)({
         [1, 1, 1, 1]
       ]
     }),
-    productCategory: (0, import_fields.relationship)({
+    category: (0, import_fields.relationship)({
       label: "Nh\xF3m s\u1EA3n ph\u1EA9m",
       ref: "Category"
     }),
     productPrice: (0, import_fields.float)({
-      label: "Gi\xE1 s\u1EA3n ph\u1EA9m",
-      validation: { isRequired: true }
+      label: "Gi\xE1 s\u1EA3n ph\u1EA9m"
+      // validation: { isRequired: true },
     }),
     productImage: (0, import_cloudinary.cloudinaryImage)({
       label: "H\xECnh \u1EA3nh s\u1EA3n ph\u1EA9m",
-      cloudinary: {
-        cloudName: process.env.CLOUDINARY_CLOUD_NAME ?? "",
-        apiKey: process.env.CLOUDINARY_API_KEY ?? "",
-        apiSecret: process.env.CLOUDINARY_API_SECRET ?? "",
-        folder: `/${process.env.CLOUDINARY_FOLDER ?? "little_angle_mart"}`
-      }
+      cloudinary
     })
   }
 });
@@ -367,8 +368,7 @@ var { withAuth } = (0, import_auth.createAuth)({
         create: {
           name: "Admin",
           canManageProducts: true,
-          canManageUser: true,
-          canManageCategory: true
+          canManageUser: true
         }
       }
     }
@@ -385,6 +385,11 @@ var session = (0, import_session.statelessSessions)({
 // keystone.ts
 var keystone_default = withAuth(
   (0, import_core7.config)({
+    server: {
+      cors: {
+        origin: "http://localhost:5173"
+      }
+    },
     db: {
       // we're using sqlite for the fastest startup experience
       //   for more information on what database might be appropriate for you

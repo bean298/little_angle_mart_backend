@@ -3,9 +3,9 @@
 
 type Product {
   id: ID!
-  productName: String
+  name: String
   productDescription: Product_productDescription_Document
-  productCategory: Category
+  category: Category
   productPrice: Float
   productImage: CloudinaryImage_File
 }
@@ -71,9 +71,9 @@ input ProductWhereInput {
   OR: [ProductWhereInput!]
   NOT: [ProductWhereInput!]
   id: IDFilter
-  productName: StringFilter
-  productCategory: CategoryWhereInput
-  productPrice: FloatFilter
+  name: StringFilter
+  category: CategoryWhereInput
+  productPrice: FloatNullableFilter
 }
 
 input IDFilter {
@@ -115,7 +115,7 @@ input NestedStringFilter {
   not: NestedStringFilter
 }
 
-input FloatFilter {
+input FloatNullableFilter {
   equals: Float
   in: [Float!]
   notIn: [Float!]
@@ -123,12 +123,12 @@ input FloatFilter {
   lte: Float
   gt: Float
   gte: Float
-  not: FloatFilter
+  not: FloatNullableFilter
 }
 
 input ProductOrderByInput {
   id: OrderDirection
-  productName: OrderDirection
+  name: OrderDirection
   productPrice: OrderDirection
 }
 
@@ -138,9 +138,9 @@ enum OrderDirection {
 }
 
 input ProductUpdateInput {
-  productName: String
+  name: String
   productDescription: JSON
-  productCategory: CategoryRelateToOneForUpdateInput
+  category: CategoryRelateToOneForUpdateInput
   productPrice: Float
   productImage: Upload
 }
@@ -160,9 +160,9 @@ input ProductUpdateArgs {
 }
 
 input ProductCreateInput {
-  productName: String
+  name: String
   productDescription: JSON
-  productCategory: CategoryRelateToOneForCreateInput
+  category: CategoryRelateToOneForCreateInput
   productPrice: Float
   productImage: Upload
 }

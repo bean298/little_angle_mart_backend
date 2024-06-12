@@ -13,14 +13,14 @@ generator client {
 
 model Product {
   id                 String    @id @default(cuid())
-  productName        String    @default("")
+  name               String    @default("")
   productDescription String    @default("[{\"type\":\"paragraph\",\"children\":[{\"text\":\"\"}]}]")
-  productCategory    Category? @relation("Product_productCategory", fields: [productCategoryId], references: [id])
-  productCategoryId  String?   @map("productCategory")
-  productPrice       Float
+  category           Category? @relation("Product_category", fields: [categoryId], references: [id])
+  categoryId         String?   @map("category")
+  productPrice       Float?
   productImage       String?
 
-  @@index([productCategoryId])
+  @@index([categoryId])
 }
 
 model User {
@@ -38,9 +38,9 @@ model User {
 }
 
 model Category {
-  id                           String    @id @default(cuid())
-  name                         String    @default("")
-  from_Product_productCategory Product[] @relation("Product_productCategory")
+  id                    String    @id @default(cuid())
+  name                  String    @default("")
+  from_Product_category Product[] @relation("Product_category")
 }
 
 model Role {
