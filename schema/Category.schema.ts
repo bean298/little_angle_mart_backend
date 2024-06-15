@@ -1,6 +1,6 @@
 import { list } from "@keystone-6/core";
 import { allowAll } from "@keystone-6/core/access";
-import { relationship, text } from "@keystone-6/core/fields";
+import { text } from "@keystone-6/core/fields";
 import { permissions } from "../auth/access";
 
 const Category = list({

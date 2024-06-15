@@ -23,12 +23,11 @@ __export(keystone_exports, {
   default: () => keystone_default
 });
 module.exports = __toCommonJS(keystone_exports);
-var import_core7 = require("@keystone-6/core");
+var import_core9 = require("@keystone-6/core");
 
 // schema/Product.schema.ts
 var import_core = require("@keystone-6/core");
 var import_access = require("@keystone-6/core/access");
-var import_fields_document = require("@keystone-6/fields-document");
 var import_fields = require("@keystone-6/core/fields");
 var import_cloudinary = require("@keystone-6/cloudinary");
 var import_config = require("dotenv/config");
@@ -90,34 +89,28 @@ var Product = (0, import_core.list)({
           context,
           item
         }) => {
-          if (resolvedData.productName) {
+          if (resolvedData.name) {
             const existingProducts = await context.query.Product.findMany({
-              where: { productName: { equals: resolvedData.productName } },
+              where: { name: { equals: resolvedData.name } },
               query: "id"
             });
-            if (existingProducts.length > 0 && (!item || existingProducts.some((product) => product.id !== item.id))) {
+            if (existingProducts.length > 0) {
               addValidationError("T\xEAn s\u1EA3n ph\u1EA9m \u0111\xE3 t\u1ED3n t\u1EA1i.");
             }
           }
         }
       }
     }),
-    productDescription: (0, import_fields_document.document)({
-      label: "Mi\xEAu t\u1EA3 v\u1EC1 s\u1EA3n ph\u1EA9m",
-      formatting: true,
-      layouts: [
-        [1, 1],
-        [1, 1, 1],
-        [1, 1, 1, 1]
-      ]
+    productDescription: (0, import_fields.text)({
+      label: "Mi\xEAu t\u1EA3 v\u1EC1 s\u1EA3n ph\u1EA9m"
     }),
     category: (0, import_fields.relationship)({
       label: "Nh\xF3m s\u1EA3n ph\u1EA9m",
       ref: "Category"
     }),
-    productPrice: (0, import_fields.float)({
-      label: "Gi\xE1 s\u1EA3n ph\u1EA9m"
-      // validation: { isRequired: true },
+    productPrice: (0, import_fields.integer)({
+      label: "Gi\xE1 s\u1EA3n ph\u1EA9m",
+      validation: { isRequired: true }
     }),
     productImage: (0, import_cloudinary.cloudinaryImage)({
       label: "H\xECnh \u1EA3nh s\u1EA3n ph\u1EA9m",
@@ -198,11 +191,11 @@ var User = (0, import_core3.list)({
     userPhone: (0, import_fields3.text)({
       label: "S\u1ED1 \u0111i\u1EC7n tho\u1EA1i",
       validation: {
-        isRequired: true,
-        match: {
-          regex: /^\d{10}$/,
-          explanation: "S\u1ED1 \u0111i\u1EC7n tho\u1EA1i ph\u1EA3i c\xF3 10 s\u1ED1"
-        }
+        isRequired: true
+        // match: {
+        //   regex: /^\d{10}$/,
+        //   explanation: "Số điện thoại phải có 10 số",
+        // },
       }
     }),
     userAddress: (0, import_fields3.text)({
@@ -322,6 +315,46 @@ var Cart = (0, import_core6.list)({
 });
 var Cart_schema_default = Cart;
 
+// schema/Invoice.schema.ts
+var import_core7 = require("@keystone-6/core");
+var import_access13 = require("@keystone-6/core/access");
+var Invoice = (0, import_core7.list)({
+  access: {
+    operation: {
+      query: import_access13.allowAll,
+      create: import_access13.allowAll,
+      update: import_access13.allowAll,
+      delete: import_access13.allowAll
+    }
+  },
+  ui: {
+    hideCreate: (args) => !permissions.canManageUser(args),
+    hideDelete: (args) => !permissions.canManageUser(args)
+  },
+  fields: {}
+});
+var Invoice_schema_default = Invoice;
+
+// schema/CartDetail.schema.ts
+var import_core8 = require("@keystone-6/core");
+var import_access15 = require("@keystone-6/core/access");
+var CartDetail = (0, import_core8.list)({
+  access: {
+    operation: {
+      query: import_access15.allowAll,
+      create: import_access15.allowAll,
+      update: import_access15.allowAll,
+      delete: import_access15.allowAll
+    }
+  },
+  ui: {
+    hideCreate: (args) => !permissions.canManageUser(args),
+    hideDelete: (args) => !permissions.canManageUser(args)
+  },
+  fields: {}
+});
+var CartDetail_schema_default = CartDetail;
+
 // schema/index.ts
 var lists = {
   Product: Product_schema_default,
@@ -329,7 +362,9 @@ var lists = {
   Category: Category_schema_default,
   Role: Role_schema_default,
   Order: Order_schema_default,
-  Cart: Cart_schema_default
+  Cart: Cart_schema_default,
+  Invoice: Invoice_schema_default,
+  CartDetail: CartDetail_schema_default
 };
 
 // auth.ts
@@ -384,7 +419,7 @@ var session = (0, import_session.statelessSessions)({
 
 // keystone.ts
 var keystone_default = withAuth(
-  (0, import_core7.config)({
+  (0, import_core9.config)({
     server: {
       cors: {
         origin: "http://localhost:5173"

@@ -1,7 +1,6 @@
 import { list } from "@keystone-6/core";
 import { allowAll } from "@keystone-6/core/access";
-import { document } from "@keystone-6/fields-document";
-import { text, relationship, integer, float } from "@keystone-6/core/fields";
+import { text, relationship, integer } from "@keystone-6/core/fields";
 import { cloudinaryImage } from "@keystone-6/cloudinary";
 import "dotenv/config";
 import { permissions } from "../auth/access";
@@ -48,39 +47,29 @@ const Product = list({
           item,
         }) => {
           //Nếu productName đã tồn tại
-          if (resolvedData.productName) {
+          if (resolvedData.name) {
             const existingProducts = await context.query.Product.findMany({
-              where: { productName: { equals: resolvedData.productName } },
+              where: { name: { equals: resolvedData.name } },
               query: "id",
             });
 
-            if (
-              existingProducts.length > 0 &&
-              (!item ||
-                existingProducts.some((product) => product.id !== item.id))
-            ) {
+            if (existingProducts.length > 0) {
               addValidationError("Tên sản phẩm đã tồn tại.");
             }
           }
         },
       },
     }),
-    productDescription: document({
+    productDescription: text({
       label: "Miêu tả về sản phẩm",
-      formatting: true,
-      layouts: [
-        [1, 1],
-        [1, 1, 1],
-        [1, 1, 1, 1],
-      ],
     }),
     category: relationship({
       label: "Nhóm sản phẩm",
       ref: "Category",
     }),
-    productPrice: float({
+    productPrice: integer({
       label: "Giá sản phẩm",
-      // validation: { isRequired: true },
+      validation: { isRequired: true },
     }),
     productImage: cloudinaryImage({
       label: "Hình ảnh sản phẩm",

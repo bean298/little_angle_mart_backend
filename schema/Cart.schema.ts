@@ -1,6 +1,6 @@
 import { list } from "@keystone-6/core";
 import { allowAll } from "@keystone-6/core/access";
-import { text, relationship, timestamp } from "@keystone-6/core/fields";
+import { relationship, timestamp } from "@keystone-6/core/fields";
 import { permissions } from "../auth/access";
 
 const Cart = list({

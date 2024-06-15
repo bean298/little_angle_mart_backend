@@ -14,10 +14,10 @@ generator client {
 model Product {
   id                 String    @id @default(cuid())
   name               String    @default("")
-  productDescription String    @default("[{\"type\":\"paragraph\",\"children\":[{\"text\":\"\"}]}]")
+  productDescription String    @default("")
   category           Category? @relation("Product_category", fields: [categoryId], references: [id])
   categoryId         String?   @map("category")
-  productPrice       Float?
+  productPrice       Int?
   productImage       String?
 
   @@index([categoryId])
@@ -64,4 +64,12 @@ model Cart {
   createdAt DateTime? @default(now())
 
   @@index([ofUserId])
+}
+
+model Invoice {
+  id String @id @default(cuid())
+}
+
+model CartDetail {
+  id String @id @default(cuid())
 }

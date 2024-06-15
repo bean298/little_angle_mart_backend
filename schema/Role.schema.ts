@@ -1,5 +1,5 @@
 import { list } from "@keystone-6/core";
-import { allOperations, allowAll } from "@keystone-6/core/access";
+import { allowAll } from "@keystone-6/core/access";
 import { checkbox, relationship, text } from "@keystone-6/core/fields";
 import { permissions } from "../auth/access";
 

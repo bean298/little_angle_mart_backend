@@ -19,16 +19,6 @@ export default async function insertSeedData() {
     data: roles,
   });
 
-  // for (const product of products) {
-  //   const categoriesItems = await context.sudo().db.Category.findMany();
-  //   await context.sudo().db.Product.createOne({
-  //     data: {
-  //       ...product,
-  //       category: { connect: { id: categoriesItems[0].id } },
-  //     },
-  //   });
-  // }
-
   // Lấy tất cả các category
   const categoriesItems = await context.sudo().db.Category.findMany();
 

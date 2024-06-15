@@ -4,6 +4,8 @@ import User from "./User.schema";
 import Role from "./Role.schema";
 import Order from "./Order.schema";
 import Cart from "./Cart.schema";
+import Invoice from "./Invoice.schema";
+import CartDetail from "./CartDetail.schema";
 
 export const lists = {
   Product,
@@ -12,4 +14,6 @@ export const lists = {
   Role,
   Order,
   Cart,
+  Invoice,
+  CartDetail,
 };
