@@ -23,7 +23,7 @@ __export(keystone_exports, {
   default: () => keystone_default
 });
 module.exports = __toCommonJS(keystone_exports);
-var import_core9 = require("@keystone-6/core");
+var import_core10 = require("@keystone-6/core");
 
 // schema/Product.schema.ts
 var import_core = require("@keystone-6/core");
@@ -38,7 +38,8 @@ function isSignedIn({ session: session2 }) {
 }
 var permissions = {
   canManageProducts: ({ session: session2 }) => session2?.data.role?.canManageProducts ?? false,
-  canManageUser: ({ session: session2 }) => session2?.data.role?.canManageUser ?? false
+  canManageUser: ({ session: session2 }) => session2?.data.role?.canManageUser ?? false,
+  canManagerPost: ({ session: session2 }) => session2?.data.role?.canManagerPost ?? false
 };
 var rules = {
   canReadPeople: ({ session: session2 }) => {
@@ -191,11 +192,11 @@ var User = (0, import_core3.list)({
     userPhone: (0, import_fields3.text)({
       label: "S\u1ED1 \u0111i\u1EC7n tho\u1EA1i",
       validation: {
-        isRequired: true
-        // match: {
-        //   regex: /^\d{10}$/,
-        //   explanation: "Số điện thoại phải có 10 số",
-        // },
+        isRequired: true,
+        match: {
+          regex: /^\d{10}$/,
+          explanation: "S\u1ED1 \u0111i\u1EC7n tho\u1EA1i ph\u1EA3i c\xF3 10 s\u1ED1"
+        }
       }
     }),
     userAddress: (0, import_fields3.text)({
@@ -209,6 +210,11 @@ var User = (0, import_core3.list)({
           fieldMode: (args) => permissions.canManageUser(args) ? "edit" : "read"
         }
       }
+    }),
+    posts: (0, import_fields3.relationship)({
+      label: "B\xE0i \u0111\u0103ng",
+      ref: "Post.author",
+      many: true
     })
   }
 });
@@ -242,6 +248,10 @@ var Role = (0, import_core4.list)({
     }),
     canManageUser: (0, import_fields4.checkbox)({
       label: "Qu\u1EA3n l\xFD ng\u01B0\u1EDDi d\xF9ng",
+      defaultValue: false
+    }),
+    canManagerPost: (0, import_fields4.checkbox)({
+      label: "Qu\u1EA3n l\xFD b\xE0i \u0111\u0103ng",
       defaultValue: false
     }),
     assignedTo: (0, import_fields4.relationship)({
@@ -355,6 +365,55 @@ var CartDetail = (0, import_core8.list)({
 });
 var CartDetail_schema_default = CartDetail;
 
+// schema/Post.schema.ts
+var import_core9 = require("@keystone-6/core");
+var import_access17 = require("@keystone-6/core/access");
+var import_fields7 = require("@keystone-6/core/fields");
+var import_cloudinary2 = require("@keystone-6/cloudinary");
+var import_config2 = require("dotenv/config");
+var import_fields_document = require("@keystone-6/fields-document");
+var cloudinary2 = {
+  cloudName: process.env.CLOUDINARY_CLOUD_NAME ?? "",
+  apiKey: process.env.CLOUDINARY_API_KEY ?? "",
+  apiSecret: process.env.CLOUDINARY_API_SECRET ?? "",
+  folder: `/${process.env.CLOUDINARY_FOLDER ?? "little_angle_mart"}`
+};
+var Post = (0, import_core9.list)({
+  access: {
+    operation: {
+      query: import_access17.allowAll,
+      update: permissions.canManagerPost,
+      delete: permissions.canManagerPost,
+      create: permissions.canManagerPost
+    }
+  },
+  ui: {
+    hideCreate: (args) => !permissions.canManagerPost(args),
+    hideDelete: (args) => !permissions.canManagerPost(args)
+  },
+  fields: {
+    title: (0, import_fields7.text)({
+      label: "Ti\xEAu \u0111\u1EC1"
+    }),
+    content: (0, import_fields7.text)({
+      label: "N\u1ED9i dung"
+    }),
+    link: (0, import_fields_document.document)({
+      label: "\u0110\u01B0\u1EDDng d\u1EABn b\xE0i \u0111\u0103ng",
+      links: true
+    }),
+    image: (0, import_cloudinary2.cloudinaryImage)({
+      label: "H\xECnh \u1EA3nh",
+      cloudinary: cloudinary2
+    }),
+    author: (0, import_fields7.relationship)({
+      label: "Ng\u01B0\u1EDDi \u0111\u0103ng",
+      ref: "User.posts"
+    })
+  }
+});
+var Post_schema_default = Post;
+
 // schema/index.ts
 var lists = {
   Product: Product_schema_default,
@@ -364,7 +423,8 @@ var lists = {
   Order: Order_schema_default,
   Cart: Cart_schema_default,
   Invoice: Invoice_schema_default,
-  CartDetail: CartDetail_schema_default
+  CartDetail: CartDetail_schema_default,
+  Post: Post_schema_default
 };
 
 // auth.ts
@@ -388,6 +448,7 @@ var { withAuth } = (0, import_auth.createAuth)({
       name
       canManageProducts
       canManageUser
+      canManagerPost
     }
   `,
   secretField: "userPassword",
@@ -403,7 +464,8 @@ var { withAuth } = (0, import_auth.createAuth)({
         create: {
           name: "Admin",
           canManageProducts: true,
-          canManageUser: true
+          canManageUser: true,
+          canManagerPost: true
         }
       }
     }
@@ -419,7 +481,7 @@ var session = (0, import_session.statelessSessions)({
 
 // keystone.ts
 var keystone_default = withAuth(
-  (0, import_core9.config)({
+  (0, import_core10.config)({
     server: {
       cors: {
         origin: "http://localhost:5173"

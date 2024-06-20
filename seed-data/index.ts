@@ -1,5 +1,5 @@
 import config from "../keystone";
-import { categories, products, roles, users } from "./data";
+import { categories, products, roles, users, posts } from "./data";
 import * as PrismaModule from "@prisma/client";
 import { getContext } from "@keystone-6/core/context";
 
@@ -13,6 +13,10 @@ export default async function insertSeedData() {
 
   await context.sudo().db.User.createMany({
     data: users,
+  });
+
+  await context.sudo().db.Posts.createMany({
+    data: posts,
   });
 
   await context.sudo().db.Role.createMany({

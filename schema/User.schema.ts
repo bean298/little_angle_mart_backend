@@ -66,6 +66,11 @@ const User = list({
         },
       },
     }),
+    posts: relationship({
+      label: "Bài đăng",
+      ref: "Post.author",
+      many: true,
+    }),
   },
 });
 

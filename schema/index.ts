@@ -6,6 +6,7 @@ import Order from "./Order.schema";
 import Cart from "./Cart.schema";
 import Invoice from "./Invoice.schema";
 import CartDetail from "./CartDetail.schema";
+import Post from "./Post.schema";
 
 export const lists = {
   Product,
@@ -16,4 +17,5 @@ export const lists = {
   Cart,
   Invoice,
   CartDetail,
+  Post,
 };
