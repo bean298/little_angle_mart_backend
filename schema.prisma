@@ -17,7 +17,7 @@ model Product {
   productDescription String    @default("")
   category           Category? @relation("Product_category", fields: [categoryId], references: [id])
   categoryId         String?   @map("category")
-  productPrice       Int?
+  productPrice       Int
   productImage       String?
 
   @@index([categoryId])

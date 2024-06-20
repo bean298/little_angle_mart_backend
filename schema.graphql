@@ -70,7 +70,7 @@ input ProductWhereInput {
   name: StringFilter
   productDescription: StringFilter
   category: CategoryWhereInput
-  productPrice: IntNullableFilter
+  productPrice: IntFilter
 }
 
 input IDFilter {
@@ -112,7 +112,7 @@ input NestedStringFilter {
   not: NestedStringFilter
 }
 
-input IntNullableFilter {
+input IntFilter {
   equals: Int
   in: [Int!]
   notIn: [Int!]
@@ -120,7 +120,7 @@ input IntNullableFilter {
   lte: Int
   gt: Int
   gte: Int
-  not: IntNullableFilter
+  not: IntFilter
 }
 
 input ProductOrderByInput {
@@ -370,6 +370,17 @@ input OrderWhereInput {
   id: IDFilter
   quantity: IntNullableFilter
   createdAt: DateTimeNullableFilter
+}
+
+input IntNullableFilter {
+  equals: Int
+  in: [Int!]
+  notIn: [Int!]
+  lt: Int
+  lte: Int
+  gt: Int
+  gte: Int
+  not: IntNullableFilter
 }
 
 input DateTimeNullableFilter {
