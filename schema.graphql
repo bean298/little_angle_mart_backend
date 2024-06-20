@@ -178,6 +178,8 @@ type User {
   userPhone: String
   userAddress: String
   role: Role
+  posts(where: PostWhereInput! = {}, orderBy: [PostOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PostWhereUniqueInput): [Post!]
+  postsCount(where: PostWhereInput! = {}): Int
 }
 
 type PasswordState {
@@ -199,6 +201,13 @@ input UserWhereInput {
   userPhone: StringFilter
   userAddress: StringFilter
   role: RoleWhereInput
+  posts: PostManyRelationFilter
+}
+
+input PostManyRelationFilter {
+  every: PostWhereInput
+  some: PostWhereInput
+  none: PostWhereInput
 }
 
 input UserOrderByInput {
@@ -216,12 +225,20 @@ input UserUpdateInput {
   userPhone: String
   userAddress: String
   role: RoleRelateToOneForUpdateInput
+  posts: PostRelateToManyForUpdateInput
 }
 
 input RoleRelateToOneForUpdateInput {
   create: RoleCreateInput
   connect: RoleWhereUniqueInput
   disconnect: Boolean
+}
+
+input PostRelateToManyForUpdateInput {
+  disconnect: [PostWhereUniqueInput!]
+  set: [PostWhereUniqueInput!]
+  create: [PostCreateInput!]
+  connect: [PostWhereUniqueInput!]
 }
 
 input UserUpdateArgs {
@@ -236,11 +253,17 @@ input UserCreateInput {
   userPhone: String
   userAddress: String
   role: RoleRelateToOneForCreateInput
+  posts: PostRelateToManyForCreateInput
 }
 
 input RoleRelateToOneForCreateInput {
   create: RoleCreateInput
   connect: RoleWhereUniqueInput
+}
+
+input PostRelateToManyForCreateInput {
+  create: [PostCreateInput!]
+  connect: [PostWhereUniqueInput!]
 }
 
 type Category {
@@ -283,6 +306,7 @@ type Role {
   name: String
   canManageProducts: Boolean
   canManageUser: Boolean
+  canManagerPost: Boolean
   assignedTo(where: UserWhereInput! = {}, orderBy: [UserOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: UserWhereUniqueInput): [User!]
   assignedToCount(where: UserWhereInput! = {}): Int
 }
@@ -299,6 +323,7 @@ input RoleWhereInput {
   name: StringFilter
   canManageProducts: BooleanFilter
   canManageUser: BooleanFilter
+  canManagerPost: BooleanFilter
   assignedTo: UserManyRelationFilter
 }
 
@@ -318,12 +343,14 @@ input RoleOrderByInput {
   name: OrderDirection
   canManageProducts: OrderDirection
   canManageUser: OrderDirection
+  canManagerPost: OrderDirection
 }
 
 input RoleUpdateInput {
   name: String
   canManageProducts: Boolean
   canManageUser: Boolean
+  canManagerPost: Boolean
   assignedTo: UserRelateToManyForUpdateInput
 }
 
@@ -343,6 +370,7 @@ input RoleCreateInput {
   name: String
   canManageProducts: Boolean
   canManageUser: Boolean
+  canManagerPost: Boolean
   assignedTo: UserRelateToManyForCreateInput
 }
 
@@ -503,6 +531,60 @@ input CartDetailOrderByInput {
   id: OrderDirection
 }
 
+type Post {
+  id: ID!
+  title: String
+  content: String
+  link: Post_link_Document
+  image: CloudinaryImage_File
+  author: User
+}
+
+type Post_link_Document {
+  document(hydrateRelationships: Boolean! = false): JSON!
+}
+
+input PostWhereUniqueInput {
+  id: ID
+}
+
+input PostWhereInput {
+  AND: [PostWhereInput!]
+  OR: [PostWhereInput!]
+  NOT: [PostWhereInput!]
+  id: IDFilter
+  title: StringFilter
+  content: StringFilter
+  author: UserWhereInput
+}
+
+input PostOrderByInput {
+  id: OrderDirection
+  title: OrderDirection
+  content: OrderDirection
+}
+
+input PostUpdateInput {
+  title: String
+  content: String
+  link: JSON
+  image: Upload
+  author: UserRelateToOneForUpdateInput
+}
+
+input PostUpdateArgs {
+  where: PostWhereUniqueInput!
+  data: PostUpdateInput!
+}
+
+input PostCreateInput {
+  title: String
+  content: String
+  link: JSON
+  image: Upload
+  author: UserRelateToOneForCreateInput
+}
+
 """
 The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
 """
@@ -549,6 +631,12 @@ type Mutation {
   deleteInvoices(where: [InvoiceWhereUniqueInput!]!): [Invoice]
   deleteCartDetail(where: CartDetailWhereUniqueInput!): CartDetail
   deleteCartDetails(where: [CartDetailWhereUniqueInput!]!): [CartDetail]
+  createPost(data: PostCreateInput!): Post
+  createPosts(data: [PostCreateInput!]!): [Post]
+  updatePost(where: PostWhereUniqueInput!, data: PostUpdateInput!): Post
+  updatePosts(data: [PostUpdateArgs!]!): [Post]
+  deletePost(where: PostWhereUniqueInput!): Post
+  deletePosts(where: [PostWhereUniqueInput!]!): [Post]
   endSession: Boolean!
   authenticateUserWithPassword(userEmail: String!, userPassword: String!): UserAuthenticationWithPasswordResult
   createInitialUser(data: CreateInitialUserInput!): UserAuthenticationWithPasswordSuccess!
@@ -597,6 +685,9 @@ type Query {
   cartDetails(where: CartDetailWhereInput! = {}, orderBy: [CartDetailOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: CartDetailWhereUniqueInput): [CartDetail!]
   cartDetail(where: CartDetailWhereUniqueInput!): CartDetail
   cartDetailsCount(where: CartDetailWhereInput! = {}): Int
+  posts(where: PostWhereInput! = {}, orderBy: [PostOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PostWhereUniqueInput): [Post!]
+  post(where: PostWhereUniqueInput!): Post
+  postsCount(where: PostWhereInput! = {}): Int
   keystone: KeystoneMeta!
   authenticatedItem: AuthenticatedItem
 }

@@ -32,6 +32,7 @@ model User {
   userAddress      String  @default("")
   role             Role?   @relation("User_role", fields: [roleId], references: [id])
   roleId           String? @map("role")
+  posts            Post[]  @relation("Post_author")
   from_Cart_ofUser Cart[]  @relation("Cart_ofUser")
 
   @@index([roleId])
@@ -48,6 +49,7 @@ model Role {
   name              String  @default("")
   canManageProducts Boolean @default(false)
   canManageUser     Boolean @default(false)
+  canManagerPost    Boolean @default(false)
   assignedTo        User[]  @relation("User_role")
 }
 
@@ -72,4 +74,16 @@ model Invoice {
 
 model CartDetail {
   id String @id @default(cuid())
+}
+
+model Post {
+  id       String  @id @default(cuid())
+  title    String  @default("")
+  content  String  @default("")
+  link     String  @default("[{\"type\":\"paragraph\",\"children\":[{\"text\":\"\"}]}]")
+  image    String?
+  author   User?   @relation("Post_author", fields: [authorId], references: [id])
+  authorId String? @map("author")
+
+  @@index([authorId])
 }

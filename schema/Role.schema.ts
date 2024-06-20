@@ -31,6 +31,10 @@ const Role = list({
       label: "Quản lý người dùng",
       defaultValue: false,
     }),
+    canManagerPost: checkbox({
+      label: "Quản lý bài đăng",
+      defaultValue: false,
+    }),
     assignedTo: relationship({
       label: "Người dùng",
       ref: "User.role",
