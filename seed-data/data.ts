@@ -51,6 +51,19 @@ export const users = [
   },
 ];
 
+export const posts = [
+  {
+    title:
+      "Bí quyết chăm sóc sức khỏe cho bà bầu suốt thai kỳ để mẹ tròn con vuông",
+  },
+  {
+    title: "Cẩm nang từ A-Z về trẻ sơ sinh 1 tháng tuổi, bố mẹ đừng bỏ lỡ!",
+  },
+  {
+    title: "Hướng dẫn cho bé ăn dặm đúng cách từ A đến Z",
+  },
+];
+
 export const products = [
   {
     name: "Combo 3 Thùng Thực phẩm bổ sung Nestlé NANGROW 4(8x180ml)",
