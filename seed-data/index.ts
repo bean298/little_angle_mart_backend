@@ -15,7 +15,7 @@ export default async function insertSeedData() {
     data: users,
   });
 
-  await context.sudo().db.Posts.createMany({
+  await context.sudo().db.Post.createMany({
     data: posts,
   });
 
