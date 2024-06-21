@@ -191,11 +191,11 @@ var User = (0, import_core3.list)({
     userPhone: (0, import_fields3.text)({
       label: "S\u1ED1 \u0111i\u1EC7n tho\u1EA1i",
       validation: {
-        isRequired: true
-        // match: {
-        //   regex: /^\d{10}$/,
-        //   explanation: "Số điện thoại phải có 10 số",
-        // },
+        isRequired: true,
+        match: {
+          regex: /^\d{10}$/,
+          explanation: "S\u1ED1 \u0111i\u1EC7n tho\u1EA1i ph\u1EA3i c\xF3 10 s\u1ED1"
+        }
       }
     }),
     userAddress: (0, import_fields3.text)({
