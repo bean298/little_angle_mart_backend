@@ -154,9 +154,13 @@ var import_fields3 = require("@keystone-6/core/fields");
 var User = (0, import_core3.list)({
   access: {
     operation: {
-      ...(0, import_access5.allOperations)(isSignedIn),
-      create: permissions.canManageUser,
-      delete: permissions.canManageUser
+      // ...allOperations(isSignedIn),
+      // create: permissions.canManageUser,
+      // delete: permissions.canManageUser,
+      query: isSignedIn,
+      create: import_access5.allowAll,
+      update: import_access5.allowAll,
+      delete: import_access5.allowAll
     },
     filter: {
       query: rules.canReadPeople

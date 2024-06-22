@@ -1,14 +1,18 @@
 import { list } from "@keystone-6/core";
-import { allOperations } from "@keystone-6/core/access";
+import { allOperations, allowAll } from "@keystone-6/core/access";
 import { password, relationship, text } from "@keystone-6/core/fields";
 import { permissions, rules, isSignedIn } from "../auth/access";
 
 const User = list({
   access: {
     operation: {
-      ...allOperations(isSignedIn),
-      create: permissions.canManageUser,
-      delete: permissions.canManageUser,
+      // ...allOperations(isSignedIn),
+      // create: permissions.canManageUser,
+      // delete: permissions.canManageUser,
+      query: isSignedIn,
+      create: allowAll,
+      update: allowAll,
+      delete: allowAll,
     },
     filter: {
       query: rules.canReadPeople,
