@@ -25,7 +25,7 @@ const Invoice = list({
     creatDate: timestamp({
       label: "Ngày tạo hoá đơn",
     }),
-    ofUser: relationship({
+    user: relationship({
       label: "Hoá đơn của",
       ref: "User",
     }),
