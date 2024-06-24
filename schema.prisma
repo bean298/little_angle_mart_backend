@@ -12,13 +12,14 @@ generator client {
 }
 
 model Product {
-  id                 String    @id @default(cuid())
-  name               String    @default("")
-  productDescription String    @default("")
-  category           Category? @relation("Product_category", fields: [categoryId], references: [id])
-  categoryId         String?   @map("category")
-  productPrice       Int
-  productImage       String?
+  id                        String       @id @default(cuid())
+  name                      String       @default("")
+  productDescription        String       @default("")
+  category                  Category?    @relation("Product_category", fields: [categoryId], references: [id])
+  categoryId                String?      @map("category")
+  productPrice              Int
+  productImage              String?
+  from_CartDetail_productId CartDetail[] @relation("CartDetail_productId")
 
   @@index([categoryId])
 }
@@ -60,10 +61,11 @@ model Order {
 }
 
 model Cart {
-  id        String    @id @default(cuid())
-  ofUser    User?     @relation("Cart_ofUser", fields: [ofUserId], references: [id])
-  ofUserId  String?   @map("ofUser")
-  createdAt DateTime? @default(now())
+  id                     String       @id @default(cuid())
+  ofUser                 User?        @relation("Cart_ofUser", fields: [ofUserId], references: [id])
+  ofUserId               String?      @map("ofUser")
+  createdAt              DateTime?    @default(now())
+  from_CartDetail_cartId CartDetail[] @relation("CartDetail_cartId")
 
   @@index([ofUserId])
 }
@@ -73,7 +75,14 @@ model Invoice {
 }
 
 model CartDetail {
-  id String @id @default(cuid())
+  id        String    @id @default(cuid())
+  cartId    Cart?     @relation("CartDetail_cartId", fields: [cartIdId], references: [id])
+  cartIdId  String?   @map("cartId")
+  productId Product[] @relation("CartDetail_productId")
+  quantity  Int?
+  price     Int?
+
+  @@index([cartIdId])
 }
 
 model Post {

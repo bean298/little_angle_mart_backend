@@ -514,6 +514,11 @@ input InvoiceOrderByInput {
 
 type CartDetail {
   id: ID!
+  cartId: Cart
+  productId(where: ProductWhereInput! = {}, orderBy: [ProductOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ProductWhereUniqueInput): [Product!]
+  productIdCount(where: ProductWhereInput! = {}): Int
+  quantity: Int
+  price: Int
 }
 
 input CartDetailWhereUniqueInput {
@@ -525,10 +530,64 @@ input CartDetailWhereInput {
   OR: [CartDetailWhereInput!]
   NOT: [CartDetailWhereInput!]
   id: IDFilter
+  cartId: CartWhereInput
+  productId: ProductManyRelationFilter
+  quantity: IntNullableFilter
+  price: IntNullableFilter
+}
+
+input ProductManyRelationFilter {
+  every: ProductWhereInput
+  some: ProductWhereInput
+  none: ProductWhereInput
 }
 
 input CartDetailOrderByInput {
   id: OrderDirection
+  quantity: OrderDirection
+  price: OrderDirection
+}
+
+input CartDetailUpdateInput {
+  cartId: CartRelateToOneForUpdateInput
+  productId: ProductRelateToManyForUpdateInput
+  quantity: Int
+  price: Int
+}
+
+input CartRelateToOneForUpdateInput {
+  create: CartCreateInput
+  connect: CartWhereUniqueInput
+  disconnect: Boolean
+}
+
+input ProductRelateToManyForUpdateInput {
+  disconnect: [ProductWhereUniqueInput!]
+  set: [ProductWhereUniqueInput!]
+  create: [ProductCreateInput!]
+  connect: [ProductWhereUniqueInput!]
+}
+
+input CartDetailUpdateArgs {
+  where: CartDetailWhereUniqueInput!
+  data: CartDetailUpdateInput!
+}
+
+input CartDetailCreateInput {
+  cartId: CartRelateToOneForCreateInput
+  productId: ProductRelateToManyForCreateInput
+  quantity: Int
+  price: Int
+}
+
+input CartRelateToOneForCreateInput {
+  create: CartCreateInput
+  connect: CartWhereUniqueInput
+}
+
+input ProductRelateToManyForCreateInput {
+  create: [ProductCreateInput!]
+  connect: [ProductWhereUniqueInput!]
 }
 
 type Post {
@@ -629,6 +688,10 @@ type Mutation {
   deleteCarts(where: [CartWhereUniqueInput!]!): [Cart]
   deleteInvoice(where: InvoiceWhereUniqueInput!): Invoice
   deleteInvoices(where: [InvoiceWhereUniqueInput!]!): [Invoice]
+  createCartDetail(data: CartDetailCreateInput!): CartDetail
+  createCartDetails(data: [CartDetailCreateInput!]!): [CartDetail]
+  updateCartDetail(where: CartDetailWhereUniqueInput!, data: CartDetailUpdateInput!): CartDetail
+  updateCartDetails(data: [CartDetailUpdateArgs!]!): [CartDetail]
   deleteCartDetail(where: CartDetailWhereUniqueInput!): CartDetail
   deleteCartDetails(where: [CartDetailWhereUniqueInput!]!): [CartDetail]
   createPost(data: PostCreateInput!): Post
