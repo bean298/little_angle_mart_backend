@@ -7,8 +7,6 @@ const User = list({
   access: {
     operation: {
       // ...allOperations(isSignedIn),
-      // create: permissions.canManageUser,
-      // delete: permissions.canManageUser,
       query: isSignedIn,
       create: allowAll,
       update: allowAll,
