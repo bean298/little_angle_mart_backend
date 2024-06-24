@@ -19,7 +19,7 @@ const Cart = list({
   },
 
   fields: {
-    ofUser: relationship({
+    user: relationship({
       label: "Đơn hàng của",
       ref: "User",
     }),

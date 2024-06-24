@@ -23,7 +23,7 @@ __export(keystone_exports, {
   default: () => keystone_default
 });
 module.exports = __toCommonJS(keystone_exports);
-var import_core10 = require("@keystone-6/core");
+var import_core11 = require("@keystone-6/core");
 
 // schema/Product.schema.ts
 var import_core = require("@keystone-6/core");
@@ -315,7 +315,7 @@ var Cart = (0, import_core6.list)({
     hideDelete: (args) => !permissions.canManageProducts(args)
   },
   fields: {
-    ofUser: (0, import_fields6.relationship)({
+    user: (0, import_fields6.relationship)({
       label: "\u0110\u01A1n h\xE0ng c\u1EE7a",
       ref: "User"
     }),
@@ -350,6 +350,10 @@ var Invoice = (0, import_core7.list)({
     }),
     creatDate: (0, import_fields7.timestamp)({
       label: "Ng\xE0y t\u1EA1o ho\xE1 \u0111\u01A1n"
+    }),
+    user: (0, import_fields7.relationship)({
+      label: "Ho\xE1 \u0111\u01A1n c\u1EE7a",
+      ref: "User"
     })
   }
 });
@@ -441,6 +445,39 @@ var Post = (0, import_core9.list)({
 });
 var Post_schema_default = Post;
 
+// schema/Feedback.schema.ts
+var import_core10 = require("@keystone-6/core");
+var import_access19 = require("@keystone-6/core/access");
+var import_fields10 = require("@keystone-6/core/fields");
+var Feedback = (0, import_core10.list)({
+  access: {
+    operation: {
+      query: import_access19.allowAll,
+      create: import_access19.allowAll,
+      update: import_access19.allowAll,
+      delete: import_access19.allowAll
+    }
+  },
+  ui: {
+    hideCreate: (args) => !permissions.canManageProducts(args),
+    hideDelete: (args) => !permissions.canManageProducts(args)
+  },
+  fields: {
+    user: (0, import_fields10.relationship)({
+      label: "\u0110\xE1nh gi\xE1 c\u1EE7a",
+      ref: "User"
+    }),
+    product: (0, import_fields10.relationship)({
+      label: "S\u1EA3n ph\u1EA9m",
+      ref: "Product"
+    }),
+    comment: (0, import_fields10.text)({
+      label: "\u0110\xE1nh gi\xE1"
+    })
+  }
+});
+var Feedback_schema_default = Feedback;
+
 // schema/index.ts
 var lists = {
   Product: Product_schema_default,
@@ -451,7 +488,8 @@ var lists = {
   Cart: Cart_schema_default,
   Invoice: Invoice_schema_default,
   CartDetail: CartDetail_schema_default,
-  Post: Post_schema_default
+  Post: Post_schema_default,
+  Feedback: Feedback_schema_default
 };
 
 // auth.ts
@@ -508,7 +546,7 @@ var session = (0, import_session.statelessSessions)({
 
 // keystone.ts
 var keystone_default = withAuth(
-  (0, import_core10.config)({
+  (0, import_core11.config)({
     server: {
       cors: {
         origin: "http://localhost:5173"

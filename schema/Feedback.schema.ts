@@ -32,3 +32,5 @@ const Feedback = list({
     }),
   },
 });
+
+export default Feedback;

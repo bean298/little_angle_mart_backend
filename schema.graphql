@@ -445,7 +445,7 @@ input OrderCreateInput {
 
 type Cart {
   id: ID!
-  ofUser: User
+  user: User
   createdAt: DateTime
 }
 
@@ -458,7 +458,7 @@ input CartWhereInput {
   OR: [CartWhereInput!]
   NOT: [CartWhereInput!]
   id: IDFilter
-  ofUser: UserWhereInput
+  user: UserWhereInput
   createdAt: DateTimeNullableFilter
 }
 
@@ -468,7 +468,7 @@ input CartOrderByInput {
 }
 
 input CartUpdateInput {
-  ofUser: UserRelateToOneForUpdateInput
+  user: UserRelateToOneForUpdateInput
   createdAt: DateTime
 }
 
@@ -484,7 +484,7 @@ input CartUpdateArgs {
 }
 
 input CartCreateInput {
-  ofUser: UserRelateToOneForCreateInput
+  user: UserRelateToOneForCreateInput
   createdAt: DateTime
 }
 
@@ -495,6 +495,9 @@ input UserRelateToOneForCreateInput {
 
 type Invoice {
   id: ID!
+  price: Int
+  creatDate: DateTime
+  user: User
 }
 
 input InvoiceWhereUniqueInput {
@@ -506,10 +509,32 @@ input InvoiceWhereInput {
   OR: [InvoiceWhereInput!]
   NOT: [InvoiceWhereInput!]
   id: IDFilter
+  price: IntNullableFilter
+  creatDate: DateTimeNullableFilter
+  user: UserWhereInput
 }
 
 input InvoiceOrderByInput {
   id: OrderDirection
+  price: OrderDirection
+  creatDate: OrderDirection
+}
+
+input InvoiceUpdateInput {
+  price: Int
+  creatDate: DateTime
+  user: UserRelateToOneForUpdateInput
+}
+
+input InvoiceUpdateArgs {
+  where: InvoiceWhereUniqueInput!
+  data: InvoiceUpdateInput!
+}
+
+input InvoiceCreateInput {
+  price: Int
+  creatDate: DateTime
+  user: UserRelateToOneForCreateInput
 }
 
 type CartDetail {
@@ -686,6 +711,10 @@ type Mutation {
   updateCarts(data: [CartUpdateArgs!]!): [Cart]
   deleteCart(where: CartWhereUniqueInput!): Cart
   deleteCarts(where: [CartWhereUniqueInput!]!): [Cart]
+  createInvoice(data: InvoiceCreateInput!): Invoice
+  createInvoices(data: [InvoiceCreateInput!]!): [Invoice]
+  updateInvoice(where: InvoiceWhereUniqueInput!, data: InvoiceUpdateInput!): Invoice
+  updateInvoices(data: [InvoiceUpdateArgs!]!): [Invoice]
   deleteInvoice(where: InvoiceWhereUniqueInput!): Invoice
   deleteInvoices(where: [InvoiceWhereUniqueInput!]!): [Invoice]
   createCartDetail(data: CartDetailCreateInput!): CartDetail
