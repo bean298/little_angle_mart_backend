@@ -33,22 +33,10 @@ var import_cloudinary = require("@keystone-6/cloudinary");
 var import_config = require("dotenv/config");
 
 // auth/access.ts
-function isSignedIn({ session: session2 }) {
-  return Boolean(session2);
-}
 var permissions = {
   canManageProducts: ({ session: session2 }) => session2?.data.role?.canManageProducts ?? false,
   canManageUser: ({ session: session2 }) => session2?.data.role?.canManageUser ?? false,
   canManagerPost: ({ session: session2 }) => session2?.data.role?.canManagerPost ?? false
-};
-var rules = {
-  canReadPeople: ({ session: session2 }) => {
-    if (!session2)
-      return false;
-    if (session2.data.role?.canManageUser)
-      return true;
-    return { id: { equals: session2.itemId } };
-  }
 };
 
 // schema/Product.schema.ts
@@ -80,7 +68,11 @@ var Product = (0, import_core.list)({
     name: (0, import_fields.text)({
       label: "T\xEAn s\u1EA3n ph\u1EA9m",
       validation: {
-        isRequired: true
+        isRequired: true,
+        match: {
+          regex: /^[a-zA-Z\s]+$/,
+          explanation: "Kh\xF4ng \u0111\u01B0\u1EE3c ch\u1EE9a k\xFD t\u1EF1 \u0111\u1EB7c bi\u1EC7t"
+        }
       },
       hooks: {
         validateInput: async ({
@@ -155,14 +147,16 @@ var User = (0, import_core3.list)({
   access: {
     operation: {
       // ...allOperations(isSignedIn),
-      query: isSignedIn,
+      // create: permissions.canManageUser,
+      // delete: permissions.canManageUser,
+      query: import_access5.allowAll,
       create: import_access5.allowAll,
       update: import_access5.allowAll,
       delete: import_access5.allowAll
-    },
-    filter: {
-      query: rules.canReadPeople
     }
+    // filter: {
+    //   query: rules.canReadPeople,
+    // },
   },
   ui: {
     hideCreate: (args) => !permissions.canManageUser(args),
@@ -171,7 +165,13 @@ var User = (0, import_core3.list)({
   fields: {
     name: (0, import_fields3.text)({
       label: "T\xEAn",
-      validation: { isRequired: true }
+      validation: {
+        isRequired: true,
+        match: {
+          regex: /^[a-zA-Z\s]+$/,
+          explanation: "Kh\xF4ng \u0111\u01B0\u1EE3c ch\u1EE9a k\xFD t\u1EF1 \u0111\u1EB7c bi\u1EC7t"
+        }
+      }
     }),
     userEmail: (0, import_fields3.text)({
       label: "Email",
@@ -202,7 +202,13 @@ var User = (0, import_core3.list)({
       }
     }),
     userAddress: (0, import_fields3.text)({
-      label: "\u0110\u1ECBa ch\u1EC9"
+      label: "\u0110\u1ECBa ch\u1EC9",
+      validation: {
+        match: {
+          regex: /^[a-zA-Z\s]+$/,
+          explanation: "Kh\xF4ng \u0111\u01B0\u1EE3c ch\u1EE9a k\xFD t\u1EF1 \u0111\u1EB7c bi\u1EC7t"
+        }
+      }
     }),
     role: (0, import_fields3.relationship)({
       label: "Quy\u1EC1n h\u1EA1n",

@@ -7,14 +7,16 @@ const User = list({
   access: {
     operation: {
       // ...allOperations(isSignedIn),
-      query: isSignedIn,
+      // create: permissions.canManageUser,
+      // delete: permissions.canManageUser,
+      query: allowAll,
       create: allowAll,
       update: allowAll,
       delete: allowAll,
     },
-    filter: {
-      query: rules.canReadPeople,
-    },
+    // filter: {
+    //   query: rules.canReadPeople,
+    // },
   },
 
   ui: {
@@ -25,7 +27,13 @@ const User = list({
   fields: {
     name: text({
       label: "Tên",
-      validation: { isRequired: true },
+      validation: {
+        isRequired: true,
+        match: {
+          regex: /^[a-zA-Z\s]+$/,
+          explanation: "Không được chứa ký tự đặc biệt",
+        },
+      },
     }),
     userEmail: text({
       label: "Email",
@@ -57,6 +65,12 @@ const User = list({
     }),
     userAddress: text({
       label: "Địa chỉ",
+      validation: {
+        match: {
+          regex: /^[a-zA-Z\s]+$/,
+          explanation: "Không được chứa ký tự đặc biệt",
+        },
+      },
     }),
     role: relationship({
       label: "Quyền hạn",
