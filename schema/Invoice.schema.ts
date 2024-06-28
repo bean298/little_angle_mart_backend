@@ -1,24 +1,35 @@
 import { list } from "@keystone-6/core";
 import { allowAll } from "@keystone-6/core/access";
-import { relationship, text } from "@keystone-6/core/fields";
+import { integer, relationship, timestamp } from "@keystone-6/core/fields";
 import { permissions } from "../auth/access";
 
 const Invoice = list({
   access: {
     operation: {
       query: allowAll,
-      create: allowAll,
-      update: allowAll,
-      delete: allowAll,
+      create: permissions.canManageProducts,
+      update: permissions.canManageProducts,
+      delete: permissions.canManageProducts,
     },
   },
 
   ui: {
-    hideCreate: (args) => !permissions.canManageUser(args),
-    hideDelete: (args) => !permissions.canManageUser(args),
+    hideCreate: (args) => !permissions.canManageProducts(args),
+    hideDelete: (args) => !permissions.canManageProducts(args),
   },
 
-  fields: {},
+  fields: {
+    price: integer({
+      label: "Giá của hoá đơn",
+    }),
+    creatDate: timestamp({
+      label: "Ngày tạo hoá đơn",
+    }),
+    user: relationship({
+      label: "Hoá đơn của",
+      ref: "User",
+    }),
+  },
 });
 
 export default Invoice;

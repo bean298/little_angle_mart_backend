@@ -20,21 +20,24 @@ model Product {
   productPrice              Int
   productImage              String?
   from_CartDetail_productId CartDetail[] @relation("CartDetail_productId")
+  from_Feedback_product     Feedback[]   @relation("Feedback_product")
 
   @@index([categoryId])
 }
 
 model User {
-  id               String  @id @default(cuid())
-  name             String  @default("")
-  userEmail        String  @unique @default("")
-  userPassword     String
-  userPhone        String  @default("")
-  userAddress      String  @default("")
-  role             Role?   @relation("User_role", fields: [roleId], references: [id])
-  roleId           String? @map("role")
-  posts            Post[]  @relation("Post_author")
-  from_Cart_ofUser Cart[]  @relation("Cart_ofUser")
+  id                 String     @id @default(cuid())
+  name               String     @default("")
+  userEmail          String     @unique @default("")
+  userPassword       String
+  userPhone          String     @default("")
+  userAddress        String     @default("")
+  role               Role?      @relation("User_role", fields: [roleId], references: [id])
+  roleId             String?    @map("role")
+  posts              Post[]     @relation("Post_author")
+  from_Cart_user     Cart[]     @relation("Cart_user")
+  from_Invoice_user  Invoice[]  @relation("Invoice_user")
+  from_Feedback_user Feedback[] @relation("Feedback_user")
 
   @@index([roleId])
 }
@@ -62,16 +65,22 @@ model Order {
 
 model Cart {
   id                     String       @id @default(cuid())
-  ofUser                 User?        @relation("Cart_ofUser", fields: [ofUserId], references: [id])
-  ofUserId               String?      @map("ofUser")
+  user                   User?        @relation("Cart_user", fields: [userId], references: [id])
+  userId                 String?      @map("user")
   createdAt              DateTime?    @default(now())
   from_CartDetail_cartId CartDetail[] @relation("CartDetail_cartId")
 
-  @@index([ofUserId])
+  @@index([userId])
 }
 
 model Invoice {
-  id String @id @default(cuid())
+  id        String    @id @default(cuid())
+  price     Int?
+  creatDate DateTime?
+  user      User?     @relation("Invoice_user", fields: [userId], references: [id])
+  userId    String?   @map("user")
+
+  @@index([userId])
 }
 
 model CartDetail {
@@ -95,4 +104,16 @@ model Post {
   authorId String? @map("author")
 
   @@index([authorId])
+}
+
+model Feedback {
+  id        String   @id @default(cuid())
+  user      User?    @relation("Feedback_user", fields: [userId], references: [id])
+  userId    String?  @map("user")
+  product   Product? @relation("Feedback_product", fields: [productId], references: [id])
+  productId String?  @map("product")
+  comment   String   @default("")
+
+  @@index([userId])
+  @@index([productId])
 }

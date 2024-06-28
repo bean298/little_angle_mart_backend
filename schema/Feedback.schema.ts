@@ -1,15 +1,15 @@
 import { list } from "@keystone-6/core";
 import { allowAll } from "@keystone-6/core/access";
-import { relationship, timestamp } from "@keystone-6/core/fields";
 import { permissions } from "../auth/access";
+import { relationship, text } from "@keystone-6/core/fields";
 
-const Cart = list({
+const Feedback = list({
   access: {
     operation: {
       query: allowAll,
-      update: permissions.canManageProducts,
-      delete: permissions.canManageProducts,
-      create: permissions.canManageProducts,
+      create: allowAll,
+      update: allowAll,
+      delete: allowAll,
     },
   },
 
@@ -20,14 +20,17 @@ const Cart = list({
 
   fields: {
     user: relationship({
-      label: "Đơn hàng của",
+      label: "Đánh giá của",
       ref: "User",
     }),
-    createdAt: timestamp({
-      label: "Ngày thêm vào giỏ hàng",
-      defaultValue: { kind: "now" },
+    product: relationship({
+      label: "Sản phẩm",
+      ref: "Product",
+    }),
+    comment: text({
+      label: "Đánh giá",
     }),
   },
 });
 
-export default Cart;
+export default Feedback;

@@ -9,25 +9,32 @@ const User = list({
       // ...allOperations(isSignedIn),
       // create: permissions.canManageUser,
       // delete: permissions.canManageUser,
-      query: isSignedIn,
+      query: allowAll,
       create: allowAll,
       update: allowAll,
       delete: allowAll,
     },
-    filter: {
-      query: rules.canReadPeople,
-    },
+    // filter: {
+    //   query: rules.canReadPeople,
+    // },
   },
 
   ui: {
     hideCreate: (args) => !permissions.canManageUser(args),
     hideDelete: (args) => !permissions.canManageUser(args),
+    itemView: {},
   },
 
   fields: {
     name: text({
       label: "Tên",
-      validation: { isRequired: true },
+      validation: {
+        isRequired: true,
+        match: {
+          regex: /^[a-zA-Z\s]+$/,
+          explanation: "Không được chứa ký tự đặc biệt",
+        },
+      },
     }),
     userEmail: text({
       label: "Email",

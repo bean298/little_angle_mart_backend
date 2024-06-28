@@ -23,7 +23,7 @@ __export(keystone_exports, {
   default: () => keystone_default
 });
 module.exports = __toCommonJS(keystone_exports);
-var import_core10 = require("@keystone-6/core");
+var import_core11 = require("@keystone-6/core");
 
 // schema/Product.schema.ts
 var import_core = require("@keystone-6/core");
@@ -33,22 +33,10 @@ var import_cloudinary = require("@keystone-6/cloudinary");
 var import_config = require("dotenv/config");
 
 // auth/access.ts
-function isSignedIn({ session: session2 }) {
-  return Boolean(session2);
-}
 var permissions = {
   canManageProducts: ({ session: session2 }) => session2?.data.role?.canManageProducts ?? false,
   canManageUser: ({ session: session2 }) => session2?.data.role?.canManageUser ?? false,
   canManagerPost: ({ session: session2 }) => session2?.data.role?.canManagerPost ?? false
-};
-var rules = {
-  canReadPeople: ({ session: session2 }) => {
-    if (!session2)
-      return false;
-    if (session2.data.role?.canManageUser)
-      return true;
-    return { id: { equals: session2.itemId } };
-  }
 };
 
 // schema/Product.schema.ts
@@ -80,7 +68,11 @@ var Product = (0, import_core.list)({
     name: (0, import_fields.text)({
       label: "T\xEAn s\u1EA3n ph\u1EA9m",
       validation: {
-        isRequired: true
+        isRequired: true,
+        match: {
+          regex: /^[a-zA-Z\s]+$/,
+          explanation: "Kh\xF4ng \u0111\u01B0\u1EE3c ch\u1EE9a k\xFD t\u1EF1 \u0111\u1EB7c bi\u1EC7t"
+        }
       },
       hooks: {
         validateInput: async ({
@@ -157,23 +149,30 @@ var User = (0, import_core3.list)({
       // ...allOperations(isSignedIn),
       // create: permissions.canManageUser,
       // delete: permissions.canManageUser,
-      query: isSignedIn,
+      query: import_access5.allowAll,
       create: import_access5.allowAll,
       update: import_access5.allowAll,
       delete: import_access5.allowAll
-    },
-    filter: {
-      query: rules.canReadPeople
     }
+    // filter: {
+    //   query: rules.canReadPeople,
+    // },
   },
   ui: {
     hideCreate: (args) => !permissions.canManageUser(args),
-    hideDelete: (args) => !permissions.canManageUser(args)
+    hideDelete: (args) => !permissions.canManageUser(args),
+    itemView: {}
   },
   fields: {
     name: (0, import_fields3.text)({
       label: "T\xEAn",
-      validation: { isRequired: true }
+      validation: {
+        isRequired: true,
+        match: {
+          regex: /^[a-zA-Z\s]+$/,
+          explanation: "Kh\xF4ng \u0111\u01B0\u1EE3c ch\u1EE9a k\xFD t\u1EF1 \u0111\u1EB7c bi\u1EC7t"
+        }
+      }
     }),
     userEmail: (0, import_fields3.text)({
       label: "Email",
@@ -317,7 +316,7 @@ var Cart = (0, import_core6.list)({
     hideDelete: (args) => !permissions.canManageProducts(args)
   },
   fields: {
-    ofUser: (0, import_fields6.relationship)({
+    user: (0, import_fields6.relationship)({
       label: "\u0110\u01A1n h\xE0ng c\u1EE7a",
       ref: "User"
     }),
@@ -332,27 +331,39 @@ var Cart_schema_default = Cart;
 // schema/Invoice.schema.ts
 var import_core7 = require("@keystone-6/core");
 var import_access13 = require("@keystone-6/core/access");
+var import_fields7 = require("@keystone-6/core/fields");
 var Invoice = (0, import_core7.list)({
   access: {
     operation: {
       query: import_access13.allowAll,
-      create: import_access13.allowAll,
-      update: import_access13.allowAll,
-      delete: import_access13.allowAll
+      create: permissions.canManageProducts,
+      update: permissions.canManageProducts,
+      delete: permissions.canManageProducts
     }
   },
   ui: {
-    hideCreate: (args) => !permissions.canManageUser(args),
-    hideDelete: (args) => !permissions.canManageUser(args)
+    hideCreate: (args) => !permissions.canManageProducts(args),
+    hideDelete: (args) => !permissions.canManageProducts(args)
   },
-  fields: {}
+  fields: {
+    price: (0, import_fields7.integer)({
+      label: "Gi\xE1 c\u1EE7a ho\xE1 \u0111\u01A1n"
+    }),
+    creatDate: (0, import_fields7.timestamp)({
+      label: "Ng\xE0y t\u1EA1o ho\xE1 \u0111\u01A1n"
+    }),
+    user: (0, import_fields7.relationship)({
+      label: "Ho\xE1 \u0111\u01A1n c\u1EE7a",
+      ref: "User"
+    })
+  }
 });
 var Invoice_schema_default = Invoice;
 
 // schema/CartDetail.schema.ts
 var import_core8 = require("@keystone-6/core");
 var import_access15 = require("@keystone-6/core/access");
-var import_fields7 = require("@keystone-6/core/fields");
+var import_fields8 = require("@keystone-6/core/fields");
 var CartDetail = (0, import_core8.list)({
   access: {
     operation: {
@@ -367,19 +378,19 @@ var CartDetail = (0, import_core8.list)({
     hideDelete: (args) => !permissions.canManageProducts(args)
   },
   fields: {
-    cartId: (0, import_fields7.relationship)({
+    cartId: (0, import_fields8.relationship)({
       label: "Gi\u1ECF h\xE0ng",
       ref: "Cart"
     }),
-    productId: (0, import_fields7.relationship)({
+    productId: (0, import_fields8.relationship)({
       label: "S\u1EA3n ph\u1EA9m",
       ref: "Product",
       many: true
     }),
-    quantity: (0, import_fields7.integer)({
+    quantity: (0, import_fields8.integer)({
       label: "S\u1ED1 l\u01B0\u1EE3ng"
     }),
-    price: (0, import_fields7.integer)({
+    price: (0, import_fields8.integer)({
       label: "Gi\xE1"
     })
   }
@@ -389,7 +400,7 @@ var CartDetail_schema_default = CartDetail;
 // schema/Post.schema.ts
 var import_core9 = require("@keystone-6/core");
 var import_access17 = require("@keystone-6/core/access");
-var import_fields8 = require("@keystone-6/core/fields");
+var import_fields9 = require("@keystone-6/core/fields");
 var import_cloudinary2 = require("@keystone-6/cloudinary");
 var import_config2 = require("dotenv/config");
 var import_fields_document = require("@keystone-6/fields-document");
@@ -413,10 +424,10 @@ var Post = (0, import_core9.list)({
     hideDelete: (args) => !permissions.canManagerPost(args)
   },
   fields: {
-    title: (0, import_fields8.text)({
+    title: (0, import_fields9.text)({
       label: "Ti\xEAu \u0111\u1EC1"
     }),
-    content: (0, import_fields8.text)({
+    content: (0, import_fields9.text)({
       label: "N\u1ED9i dung"
     }),
     link: (0, import_fields_document.document)({
@@ -427,13 +438,46 @@ var Post = (0, import_core9.list)({
       label: "H\xECnh \u1EA3nh",
       cloudinary: cloudinary2
     }),
-    author: (0, import_fields8.relationship)({
+    author: (0, import_fields9.relationship)({
       label: "Ng\u01B0\u1EDDi \u0111\u0103ng",
       ref: "User.posts"
     })
   }
 });
 var Post_schema_default = Post;
+
+// schema/Feedback.schema.ts
+var import_core10 = require("@keystone-6/core");
+var import_access19 = require("@keystone-6/core/access");
+var import_fields10 = require("@keystone-6/core/fields");
+var Feedback = (0, import_core10.list)({
+  access: {
+    operation: {
+      query: import_access19.allowAll,
+      create: import_access19.allowAll,
+      update: import_access19.allowAll,
+      delete: import_access19.allowAll
+    }
+  },
+  ui: {
+    hideCreate: (args) => !permissions.canManageProducts(args),
+    hideDelete: (args) => !permissions.canManageProducts(args)
+  },
+  fields: {
+    user: (0, import_fields10.relationship)({
+      label: "\u0110\xE1nh gi\xE1 c\u1EE7a",
+      ref: "User"
+    }),
+    product: (0, import_fields10.relationship)({
+      label: "S\u1EA3n ph\u1EA9m",
+      ref: "Product"
+    }),
+    comment: (0, import_fields10.text)({
+      label: "\u0110\xE1nh gi\xE1"
+    })
+  }
+});
+var Feedback_schema_default = Feedback;
 
 // schema/index.ts
 var lists = {
@@ -445,7 +489,8 @@ var lists = {
   Cart: Cart_schema_default,
   Invoice: Invoice_schema_default,
   CartDetail: CartDetail_schema_default,
-  Post: Post_schema_default
+  Post: Post_schema_default,
+  Feedback: Feedback_schema_default
 };
 
 // auth.ts
@@ -502,7 +547,7 @@ var session = (0, import_session.statelessSessions)({
 
 // keystone.ts
 var keystone_default = withAuth(
-  (0, import_core10.config)({
+  (0, import_core11.config)({
     server: {
       cors: {
         origin: "http://localhost:5173"
