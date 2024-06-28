@@ -70,7 +70,7 @@ var Product = (0, import_core.list)({
       validation: {
         isRequired: true,
         match: {
-          regex: /^[a-zA-Z\s]+$/,
+          regex: /^[a-zA-Z0-9\s]+$/,
           explanation: "Kh\xF4ng \u0111\u01B0\u1EE3c ch\u1EE9a k\xFD t\u1EF1 \u0111\u1EB7c bi\u1EC7t"
         }
       },

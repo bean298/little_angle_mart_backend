@@ -39,7 +39,7 @@ const Product = list({
       validation: {
         isRequired: true,
         match: {
-          regex: /^[a-zA-Z\s]+$/,
+          regex: /^[a-zA-Z0-9\s]+$/,
           explanation: "Không được chứa ký tự đặc biệt",
         },
       },
