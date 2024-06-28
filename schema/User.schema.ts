@@ -22,6 +22,7 @@ const User = list({
   ui: {
     hideCreate: (args) => !permissions.canManageUser(args),
     hideDelete: (args) => !permissions.canManageUser(args),
+    itemView: {},
   },
 
   fields: {
@@ -65,12 +66,6 @@ const User = list({
     }),
     userAddress: text({
       label: "Địa chỉ",
-      validation: {
-        match: {
-          regex: /^[a-zA-Z\s]+$/,
-          explanation: "Không được chứa ký tự đặc biệt",
-        },
-      },
     }),
     role: relationship({
       label: "Quyền hạn",

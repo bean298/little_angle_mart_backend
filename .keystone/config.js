@@ -160,7 +160,8 @@ var User = (0, import_core3.list)({
   },
   ui: {
     hideCreate: (args) => !permissions.canManageUser(args),
-    hideDelete: (args) => !permissions.canManageUser(args)
+    hideDelete: (args) => !permissions.canManageUser(args),
+    itemView: {}
   },
   fields: {
     name: (0, import_fields3.text)({
@@ -202,13 +203,7 @@ var User = (0, import_core3.list)({
       }
     }),
     userAddress: (0, import_fields3.text)({
-      label: "\u0110\u1ECBa ch\u1EC9",
-      validation: {
-        match: {
-          regex: /^[a-zA-Z\s]+$/,
-          explanation: "Kh\xF4ng \u0111\u01B0\u1EE3c ch\u1EE9a k\xFD t\u1EF1 \u0111\u1EB7c bi\u1EC7t"
-        }
-      }
+      label: "\u0110\u1ECBa ch\u1EC9"
     }),
     role: (0, import_fields3.relationship)({
       label: "Quy\u1EC1n h\u1EA1n",
