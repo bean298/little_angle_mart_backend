@@ -38,17 +38,12 @@ const Product = list({
       label: "Tên sản phẩm",
       validation: {
         isRequired: true,
-        match: {
-          regex: /^[a-zA-Z0-9\s]+$/,
-          explanation: "Không được chứa ký tự đặc biệt",
-        },
       },
       hooks: {
         validateInput: async ({
           resolvedData, //Xử lý input data
           addValidationError,
           context,
-          item,
         }) => {
           //Nếu productName đã tồn tại
           if (resolvedData.name) {
