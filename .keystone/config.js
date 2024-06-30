@@ -68,11 +68,11 @@ var Product = (0, import_core.list)({
     name: (0, import_fields.text)({
       label: "T\xEAn s\u1EA3n ph\u1EA9m",
       validation: {
-        isRequired: true,
-        match: {
-          regex: /^[a-zA-Z0-9\s]+$/,
-          explanation: "Kh\xF4ng \u0111\u01B0\u1EE3c ch\u1EE9a k\xFD t\u1EF1 \u0111\u1EB7c bi\u1EC7t"
-        }
+        isRequired: true
+        // match: {
+        //   regex: /^[a-zA-Z0-9\s]+$/,
+        //   explanation: "Không được chứa ký tự đặc biệt",
+        // },
       },
       hooks: {
         validateInput: async ({
@@ -308,7 +308,7 @@ var Cart = (0, import_core6.list)({
       query: import_access11.allowAll,
       update: permissions.canManageProducts,
       delete: permissions.canManageProducts,
-      create: permissions.canManageProducts
+      create: import_access11.allowAll
     }
   },
   ui: {
@@ -368,7 +368,7 @@ var CartDetail = (0, import_core8.list)({
   access: {
     operation: {
       query: import_access15.allowAll,
-      create: permissions.canManageProducts,
+      create: import_access15.allowAll,
       update: permissions.canManageProducts,
       delete: permissions.canManageProducts
     }
