@@ -23,7 +23,7 @@ type AccessArgs = {
 // Hàm nhận một AccessArgs là một object bự, và có một key session được định nghĩa trong đó
 // Nếu session trong AccessArgs true nghĩa là người dùng đã đăng nhập rồi hàm return về true
 export function isSignedIn({ session }: AccessArgs) {
-  // console.log({ session });
+  console.log({ session });
 
   return Boolean(session);
 }
@@ -51,6 +51,8 @@ export const permissions = {
 // Kiểm tra vai trò của user có được truy cập hay ko
 export const rules = {
   canReadPeople: ({ session }: AccessArgs) => {
+    console.log({ session });
+
     if (!session) return false;
 
     // Kiểm tra có chỉnh sửa đc user hay kh dựa trên canManageUser

@@ -1,6 +1,6 @@
 import { list } from "@keystone-6/core";
 import { allowAll } from "@keystone-6/core/access";
-import { integer, timestamp } from "@keystone-6/core/fields";
+import { integer, select, timestamp } from "@keystone-6/core/fields";
 import { permissions } from "../auth/access";
 
 const Order = list({
@@ -19,12 +19,18 @@ const Order = list({
   },
 
   fields: {
-    quantity: integer({
-      label: "Số lượng",
+    totalPrice: integer({
+      label: "Giá",
     }),
     createdAt: timestamp({
       label: "Ngày đặt",
       defaultValue: { kind: "now" },
+    }),
+    status: select({
+      options: [
+        { label: "Xác nhận đơn hàng", value: "published" },
+        { label: "Huỷ đơn hàng", value: "draft" },
+      ],
     }),
   },
 });

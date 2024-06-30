@@ -7,16 +7,14 @@ const User = list({
   access: {
     operation: {
       // ...allOperations(isSignedIn),
-      // create: permissions.canManageUser,
-      // delete: permissions.canManageUser,
       query: allowAll,
       create: allowAll,
-      update: allowAll,
-      delete: allowAll,
+      update: permissions.canManageUser,
+      delete: permissions.canManageUser,
     },
-    // filter: {
-    //   query: rules.canReadPeople,
-    // },
+    filter: {
+      query: rules.canReadPeople,
+    },
   },
 
   ui: {
@@ -30,10 +28,6 @@ const User = list({
       label: "Tên",
       validation: {
         isRequired: true,
-        match: {
-          regex: /^[a-zA-Z\s]+$/,
-          explanation: "Không được chứa ký tự đặc biệt",
-        },
       },
     }),
     userEmail: text({
