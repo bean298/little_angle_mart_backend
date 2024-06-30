@@ -463,7 +463,7 @@ var CartItem = (0, import_core10.list)({
   access: {
     operation: {
       query: import_access19.allowAll,
-      create: permissions.canManageProducts,
+      create: import_access19.allowAll,
       update: permissions.canManageProducts,
       delete: permissions.canManageProducts
     }
