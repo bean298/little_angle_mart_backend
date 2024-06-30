@@ -370,7 +370,7 @@ var CartDetail = (0, import_core8.list)({
       query: import_access15.allowAll,
       create: import_access15.allowAll,
       update: permissions.canManageProducts,
-      delete: permissions.canManageProducts
+      delete: import_access15.allowAll
     }
   },
   ui: {
