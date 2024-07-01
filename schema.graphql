@@ -95,7 +95,13 @@ input StringFilter {
   contains: String
   startsWith: String
   endsWith: String
+  mode: QueryMode
   not: NestedStringFilter
+}
+
+enum QueryMode {
+  default
+  insensitive
 }
 
 input NestedStringFilter {
@@ -381,8 +387,9 @@ input UserRelateToManyForCreateInput {
 
 type Order {
   id: ID!
-  quantity: Int
+  totalPrice: Int
   createdAt: DateTime
+  status: String
 }
 
 scalar DateTime @specifiedBy(url: "https://datatracker.ietf.org/doc/html/rfc3339#section-5.6")
@@ -396,8 +403,9 @@ input OrderWhereInput {
   OR: [OrderWhereInput!]
   NOT: [OrderWhereInput!]
   id: IDFilter
-  quantity: IntNullableFilter
+  totalPrice: IntNullableFilter
   createdAt: DateTimeNullableFilter
+  status: StringNullableFilter
 }
 
 input IntNullableFilter {
@@ -422,15 +430,32 @@ input DateTimeNullableFilter {
   not: DateTimeNullableFilter
 }
 
+input StringNullableFilter {
+  equals: String
+  in: [String!]
+  notIn: [String!]
+  lt: String
+  lte: String
+  gt: String
+  gte: String
+  contains: String
+  startsWith: String
+  endsWith: String
+  mode: QueryMode
+  not: StringNullableFilter
+}
+
 input OrderOrderByInput {
   id: OrderDirection
-  quantity: OrderDirection
+  totalPrice: OrderDirection
   createdAt: OrderDirection
+  status: OrderDirection
 }
 
 input OrderUpdateInput {
-  quantity: Int
+  totalPrice: Int
   createdAt: DateTime
+  status: String
 }
 
 input OrderUpdateArgs {
@@ -439,14 +464,18 @@ input OrderUpdateArgs {
 }
 
 input OrderCreateInput {
-  quantity: Int
+  totalPrice: Int
   createdAt: DateTime
+  status: String
 }
 
 type Cart {
   id: ID!
   user: User
+  quantity: Int
   createdAt: DateTime
+  items(where: CartItemWhereInput! = {}, orderBy: [CartItemOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: CartItemWhereUniqueInput): [CartItem!]
+  itemsCount(where: CartItemWhereInput! = {}): Int
 }
 
 input CartWhereUniqueInput {
@@ -459,23 +488,41 @@ input CartWhereInput {
   NOT: [CartWhereInput!]
   id: IDFilter
   user: UserWhereInput
+  quantity: IntNullableFilter
   createdAt: DateTimeNullableFilter
+  items: CartItemManyRelationFilter
+}
+
+input CartItemManyRelationFilter {
+  every: CartItemWhereInput
+  some: CartItemWhereInput
+  none: CartItemWhereInput
 }
 
 input CartOrderByInput {
   id: OrderDirection
+  quantity: OrderDirection
   createdAt: OrderDirection
 }
 
 input CartUpdateInput {
   user: UserRelateToOneForUpdateInput
+  quantity: Int
   createdAt: DateTime
+  items: CartItemRelateToManyForUpdateInput
 }
 
 input UserRelateToOneForUpdateInput {
   create: UserCreateInput
   connect: UserWhereUniqueInput
   disconnect: Boolean
+}
+
+input CartItemRelateToManyForUpdateInput {
+  disconnect: [CartItemWhereUniqueInput!]
+  set: [CartItemWhereUniqueInput!]
+  create: [CartItemCreateInput!]
+  connect: [CartItemWhereUniqueInput!]
 }
 
 input CartUpdateArgs {
@@ -485,12 +532,19 @@ input CartUpdateArgs {
 
 input CartCreateInput {
   user: UserRelateToOneForCreateInput
+  quantity: Int
   createdAt: DateTime
+  items: CartItemRelateToManyForCreateInput
 }
 
 input UserRelateToOneForCreateInput {
   create: UserCreateInput
   connect: UserWhereUniqueInput
+}
+
+input CartItemRelateToManyForCreateInput {
+  create: [CartItemCreateInput!]
+  connect: [CartItemWhereUniqueInput!]
 }
 
 type Invoice {
@@ -537,7 +591,7 @@ input InvoiceCreateInput {
   user: UserRelateToOneForCreateInput
 }
 
-type CartDetail {
+type CartItem {
   id: ID!
   cartId: Cart
   productId(where: ProductWhereInput! = {}, orderBy: [ProductOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ProductWhereUniqueInput): [Product!]
@@ -546,14 +600,14 @@ type CartDetail {
   price: Int
 }
 
-input CartDetailWhereUniqueInput {
+input CartItemWhereUniqueInput {
   id: ID
 }
 
-input CartDetailWhereInput {
-  AND: [CartDetailWhereInput!]
-  OR: [CartDetailWhereInput!]
-  NOT: [CartDetailWhereInput!]
+input CartItemWhereInput {
+  AND: [CartItemWhereInput!]
+  OR: [CartItemWhereInput!]
+  NOT: [CartItemWhereInput!]
   id: IDFilter
   cartId: CartWhereInput
   productId: ProductManyRelationFilter
@@ -567,13 +621,13 @@ input ProductManyRelationFilter {
   none: ProductWhereInput
 }
 
-input CartDetailOrderByInput {
+input CartItemOrderByInput {
   id: OrderDirection
   quantity: OrderDirection
   price: OrderDirection
 }
 
-input CartDetailUpdateInput {
+input CartItemUpdateInput {
   cartId: CartRelateToOneForUpdateInput
   productId: ProductRelateToManyForUpdateInput
   quantity: Int
@@ -593,12 +647,12 @@ input ProductRelateToManyForUpdateInput {
   connect: [ProductWhereUniqueInput!]
 }
 
-input CartDetailUpdateArgs {
-  where: CartDetailWhereUniqueInput!
-  data: CartDetailUpdateInput!
+input CartItemUpdateArgs {
+  where: CartItemWhereUniqueInput!
+  data: CartItemUpdateInput!
 }
 
-input CartDetailCreateInput {
+input CartItemCreateInput {
   cartId: CartRelateToOneForCreateInput
   productId: ProductRelateToManyForCreateInput
   quantity: Int
@@ -771,12 +825,12 @@ type Mutation {
   updateInvoices(data: [InvoiceUpdateArgs!]!): [Invoice]
   deleteInvoice(where: InvoiceWhereUniqueInput!): Invoice
   deleteInvoices(where: [InvoiceWhereUniqueInput!]!): [Invoice]
-  createCartDetail(data: CartDetailCreateInput!): CartDetail
-  createCartDetails(data: [CartDetailCreateInput!]!): [CartDetail]
-  updateCartDetail(where: CartDetailWhereUniqueInput!, data: CartDetailUpdateInput!): CartDetail
-  updateCartDetails(data: [CartDetailUpdateArgs!]!): [CartDetail]
-  deleteCartDetail(where: CartDetailWhereUniqueInput!): CartDetail
-  deleteCartDetails(where: [CartDetailWhereUniqueInput!]!): [CartDetail]
+  createCartItem(data: CartItemCreateInput!): CartItem
+  createCartItems(data: [CartItemCreateInput!]!): [CartItem]
+  updateCartItem(where: CartItemWhereUniqueInput!, data: CartItemUpdateInput!): CartItem
+  updateCartItems(data: [CartItemUpdateArgs!]!): [CartItem]
+  deleteCartItem(where: CartItemWhereUniqueInput!): CartItem
+  deleteCartItems(where: [CartItemWhereUniqueInput!]!): [CartItem]
   createPost(data: PostCreateInput!): Post
   createPosts(data: [PostCreateInput!]!): [Post]
   updatePost(where: PostWhereUniqueInput!, data: PostUpdateInput!): Post
@@ -834,9 +888,9 @@ type Query {
   invoices(where: InvoiceWhereInput! = {}, orderBy: [InvoiceOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: InvoiceWhereUniqueInput): [Invoice!]
   invoice(where: InvoiceWhereUniqueInput!): Invoice
   invoicesCount(where: InvoiceWhereInput! = {}): Int
-  cartDetails(where: CartDetailWhereInput! = {}, orderBy: [CartDetailOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: CartDetailWhereUniqueInput): [CartDetail!]
-  cartDetail(where: CartDetailWhereUniqueInput!): CartDetail
-  cartDetailsCount(where: CartDetailWhereInput! = {}): Int
+  cartItems(where: CartItemWhereInput! = {}, orderBy: [CartItemOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: CartItemWhereUniqueInput): [CartItem!]
+  cartItem(where: CartItemWhereUniqueInput!): CartItem
+  cartItemsCount(where: CartItemWhereInput! = {}): Int
   posts(where: PostWhereInput! = {}, orderBy: [PostOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PostWhereUniqueInput): [Post!]
   post(where: PostWhereUniqueInput!): Post
   postsCount(where: PostWhereInput! = {}): Int
@@ -933,11 +987,6 @@ enum KeystoneAdminUIFieldMetaItemViewFieldMode {
 enum KeystoneAdminUIFieldMetaItemViewFieldPosition {
   form
   sidebar
-}
-
-enum QueryMode {
-  default
-  insensitive
 }
 
 type KeystoneAdminUIFieldGroupMeta {

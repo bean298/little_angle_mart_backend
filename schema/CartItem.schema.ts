@@ -3,12 +3,12 @@ import { allowAll } from "@keystone-6/core/access";
 import { integer, relationship } from "@keystone-6/core/fields";
 import { permissions } from "../auth/access";
 
-const CartDetail = list({
+const CartItem = list({
   access: {
     operation: {
       query: allowAll,
       create: allowAll,
-      update: permissions.canManageProducts,
+      update: allowAll,
       delete: allowAll,
     },
   },
@@ -37,4 +37,4 @@ const CartDetail = list({
   },
 });
 
-export default CartDetail;
+export default CartItem;
