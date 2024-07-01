@@ -311,8 +311,8 @@ var Cart = (0, import_core6.list)({
   access: {
     operation: {
       query: import_access11.allowAll,
-      update: permissions.canManageProducts,
-      delete: permissions.canManageProducts,
+      update: import_access11.allowAll,
+      delete: import_access11.allowAll,
       create: import_access11.allowAll
     }
   },
@@ -464,8 +464,8 @@ var CartItem = (0, import_core10.list)({
     operation: {
       query: import_access19.allowAll,
       create: import_access19.allowAll,
-      update: permissions.canManageProducts,
-      delete: permissions.canManageProducts
+      update: import_access19.allowAll,
+      delete: import_access19.allowAll
     }
   },
   ui: {

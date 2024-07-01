@@ -7,8 +7,8 @@ const Cart = list({
   access: {
     operation: {
       query: allowAll,
-      update: permissions.canManageProducts,
-      delete: permissions.canManageProducts,
+      update: allowAll,
+      delete: allowAll,
       create: allowAll,
     },
   },
