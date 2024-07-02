@@ -7,15 +7,15 @@ const Role = list({
   access: {
     operation: {
       query: allowAll,
-      create: permissions.canManageUser,
-      update: permissions.canManageUser,
-      delete: permissions.canManageUser,
+      create: permissions.canManageRole,
+      update: permissions.canManageRole,
+      delete: permissions.canManageRole,
     },
   },
 
   ui: {
-    hideCreate: (args) => !permissions.canManageUser(args),
-    hideDelete: (args) => !permissions.canManageUser(args),
+    hideCreate: (args) => !permissions.canManageRole(args),
+    hideDelete: (args) => !permissions.canManageRole(args),
   },
 
   fields: {
@@ -31,8 +31,12 @@ const Role = list({
       label: "Quản lý người dùng",
       defaultValue: false,
     }),
-    canManagerPost: checkbox({
+    canManagePost: checkbox({
       label: "Quản lý bài đăng",
+      defaultValue: false,
+    }),
+    canManageRole: checkbox({
+      label: "Quản lý vai trò",
       defaultValue: false,
     }),
     assignedTo: relationship({
