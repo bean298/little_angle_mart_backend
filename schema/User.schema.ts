@@ -9,8 +9,8 @@ const User = list({
       // ...allOperations(isSignedIn),
       query: allowAll,
       create: allowAll,
-      update: permissions.canManageUser,
-      delete: permissions.canManageUser,
+      update: allowAll,
+      delete: allowAll,
     },
     filter: {
       query: rules.canReadPeople,
@@ -75,6 +75,12 @@ const User = list({
       label: "Bài đăng",
       ref: "Post.author",
       many: true,
+      ui: {
+        itemView: {
+          fieldMode: (args) =>
+            permissions.canManageUser(args) ? "edit" : "read",
+        },
+      },
     }),
   },
 });

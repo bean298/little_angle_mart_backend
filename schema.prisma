@@ -53,7 +53,8 @@ model Role {
   name              String  @default("")
   canManageProducts Boolean @default(false)
   canManageUser     Boolean @default(false)
-  canManagerPost    Boolean @default(false)
+  canManagePost     Boolean @default(false)
+  canManageRole     Boolean @default(false)
   assignedTo        User[]  @relation("User_role")
 }
 

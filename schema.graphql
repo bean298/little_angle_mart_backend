@@ -312,7 +312,8 @@ type Role {
   name: String
   canManageProducts: Boolean
   canManageUser: Boolean
-  canManagerPost: Boolean
+  canManagePost: Boolean
+  canManageRole: Boolean
   assignedTo(where: UserWhereInput! = {}, orderBy: [UserOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: UserWhereUniqueInput): [User!]
   assignedToCount(where: UserWhereInput! = {}): Int
 }
@@ -329,7 +330,8 @@ input RoleWhereInput {
   name: StringFilter
   canManageProducts: BooleanFilter
   canManageUser: BooleanFilter
-  canManagerPost: BooleanFilter
+  canManagePost: BooleanFilter
+  canManageRole: BooleanFilter
   assignedTo: UserManyRelationFilter
 }
 
@@ -349,14 +351,16 @@ input RoleOrderByInput {
   name: OrderDirection
   canManageProducts: OrderDirection
   canManageUser: OrderDirection
-  canManagerPost: OrderDirection
+  canManagePost: OrderDirection
+  canManageRole: OrderDirection
 }
 
 input RoleUpdateInput {
   name: String
   canManageProducts: Boolean
   canManageUser: Boolean
-  canManagerPost: Boolean
+  canManagePost: Boolean
+  canManageRole: Boolean
   assignedTo: UserRelateToManyForUpdateInput
 }
 
@@ -376,7 +380,8 @@ input RoleCreateInput {
   name: String
   canManageProducts: Boolean
   canManageUser: Boolean
-  canManagerPost: Boolean
+  canManagePost: Boolean
+  canManageRole: Boolean
   assignedTo: UserRelateToManyForCreateInput
 }
 
