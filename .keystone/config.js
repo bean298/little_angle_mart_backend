@@ -164,8 +164,7 @@ var User = (0, import_core3.list)({
   },
   ui: {
     hideCreate: (args) => !permissions.canManageUser(args),
-    hideDelete: (args) => !permissions.canManageUser(args),
-    itemView: {}
+    hideDelete: (args) => !permissions.canManageUser(args)
   },
   fields: {
     name: (0, import_fields3.text)({
@@ -296,6 +295,15 @@ var Order = (0, import_core5.list)({
     hideDelete: (args) => !permissions.canManageProducts(args)
   },
   fields: {
+    user: (0, import_fields5.relationship)({
+      label: "Ng\u01B0\u1EDDi mua",
+      ref: "User"
+    }),
+    items: (0, import_fields5.relationship)({
+      label: "S\u1EA3n ph\u1EA9m",
+      ref: "CartItem",
+      many: true
+    }),
     totalPrice: (0, import_fields5.integer)({
       label: "Gi\xE1"
     }),
@@ -304,9 +312,13 @@ var Order = (0, import_core5.list)({
       defaultValue: { kind: "now" }
     }),
     status: (0, import_fields5.select)({
+      label: "Tr\u1EA1ng th\xE1i",
+      defaultValue: "Order",
       options: [
-        { label: "X\xE1c nh\u1EADn \u0111\u01A1n h\xE0ng", value: "published" },
-        { label: "Hu\u1EF7 \u0111\u01A1n h\xE0ng", value: "draft" }
+        { label: "X\xE1c nh\u1EADn \u0111\u01A1n h\xE0ng", value: "Confirm" },
+        { label: "Hu\u1EF7 \u0111\u01A1n h\xE0ng", value: "Cancel" },
+        { label: "X\xE1c nh\u1EADn \u0111\xE3 thanh to\xE1n", value: "Paid" },
+        { label: "\u0110\u1EB7t h\xE0ng", value: "Order" }
       ]
     })
   }

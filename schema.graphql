@@ -392,6 +392,9 @@ input UserRelateToManyForCreateInput {
 
 type Order {
   id: ID!
+  user: User
+  items(where: CartItemWhereInput! = {}, orderBy: [CartItemOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: CartItemWhereUniqueInput): [CartItem!]
+  itemsCount(where: CartItemWhereInput! = {}): Int
   totalPrice: Int
   createdAt: DateTime
   status: String
@@ -408,9 +411,17 @@ input OrderWhereInput {
   OR: [OrderWhereInput!]
   NOT: [OrderWhereInput!]
   id: IDFilter
+  user: UserWhereInput
+  items: CartItemManyRelationFilter
   totalPrice: IntNullableFilter
   createdAt: DateTimeNullableFilter
   status: StringNullableFilter
+}
+
+input CartItemManyRelationFilter {
+  every: CartItemWhereInput
+  some: CartItemWhereInput
+  none: CartItemWhereInput
 }
 
 input IntNullableFilter {
@@ -458,9 +469,24 @@ input OrderOrderByInput {
 }
 
 input OrderUpdateInput {
+  user: UserRelateToOneForUpdateInput
+  items: CartItemRelateToManyForUpdateInput
   totalPrice: Int
   createdAt: DateTime
   status: String
+}
+
+input UserRelateToOneForUpdateInput {
+  create: UserCreateInput
+  connect: UserWhereUniqueInput
+  disconnect: Boolean
+}
+
+input CartItemRelateToManyForUpdateInput {
+  disconnect: [CartItemWhereUniqueInput!]
+  set: [CartItemWhereUniqueInput!]
+  create: [CartItemCreateInput!]
+  connect: [CartItemWhereUniqueInput!]
 }
 
 input OrderUpdateArgs {
@@ -469,9 +495,21 @@ input OrderUpdateArgs {
 }
 
 input OrderCreateInput {
+  user: UserRelateToOneForCreateInput
+  items: CartItemRelateToManyForCreateInput
   totalPrice: Int
   createdAt: DateTime
   status: String
+}
+
+input UserRelateToOneForCreateInput {
+  create: UserCreateInput
+  connect: UserWhereUniqueInput
+}
+
+input CartItemRelateToManyForCreateInput {
+  create: [CartItemCreateInput!]
+  connect: [CartItemWhereUniqueInput!]
 }
 
 type Cart {
@@ -498,12 +536,6 @@ input CartWhereInput {
   items: CartItemManyRelationFilter
 }
 
-input CartItemManyRelationFilter {
-  every: CartItemWhereInput
-  some: CartItemWhereInput
-  none: CartItemWhereInput
-}
-
 input CartOrderByInput {
   id: OrderDirection
   quantity: OrderDirection
@@ -517,19 +549,6 @@ input CartUpdateInput {
   items: CartItemRelateToManyForUpdateInput
 }
 
-input UserRelateToOneForUpdateInput {
-  create: UserCreateInput
-  connect: UserWhereUniqueInput
-  disconnect: Boolean
-}
-
-input CartItemRelateToManyForUpdateInput {
-  disconnect: [CartItemWhereUniqueInput!]
-  set: [CartItemWhereUniqueInput!]
-  create: [CartItemCreateInput!]
-  connect: [CartItemWhereUniqueInput!]
-}
-
 input CartUpdateArgs {
   where: CartWhereUniqueInput!
   data: CartUpdateInput!
@@ -540,16 +559,6 @@ input CartCreateInput {
   quantity: Int
   createdAt: DateTime
   items: CartItemRelateToManyForCreateInput
-}
-
-input UserRelateToOneForCreateInput {
-  create: UserCreateInput
-  connect: UserWhereUniqueInput
-}
-
-input CartItemRelateToManyForCreateInput {
-  create: [CartItemCreateInput!]
-  connect: [CartItemWhereUniqueInput!]
 }
 
 type Invoice {
