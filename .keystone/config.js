@@ -36,7 +36,8 @@ var import_config = require("dotenv/config");
 var permissions = {
   canManageProducts: ({ session: session2 }) => session2?.data.role?.canManageProducts ?? false,
   canManageUser: ({ session: session2 }) => session2?.data.role?.canManageUser ?? false,
-  canManagerPost: ({ session: session2 }) => session2?.data.role?.canManagerPost ?? false
+  canManagePost: ({ session: session2 }) => session2?.data.role?.canManagePost ?? false,
+  canManageRole: ({ session: session2 }) => session2?.data.role?.canManageRole ?? false
 };
 var rules = {
   canReadPeople: ({ session: session2 }) => {
@@ -154,8 +155,8 @@ var User = (0, import_core3.list)({
       // ...allOperations(isSignedIn),
       query: import_access5.allowAll,
       create: import_access5.allowAll,
-      update: permissions.canManageUser,
-      delete: permissions.canManageUser
+      update: import_access5.allowAll,
+      delete: import_access5.allowAll
     },
     filter: {
       query: rules.canReadPeople
@@ -163,8 +164,7 @@ var User = (0, import_core3.list)({
   },
   ui: {
     hideCreate: (args) => !permissions.canManageUser(args),
-    hideDelete: (args) => !permissions.canManageUser(args),
-    itemView: {}
+    hideDelete: (args) => !permissions.canManageUser(args)
   },
   fields: {
     name: (0, import_fields3.text)({
@@ -216,7 +216,12 @@ var User = (0, import_core3.list)({
     posts: (0, import_fields3.relationship)({
       label: "B\xE0i \u0111\u0103ng",
       ref: "Post.author",
-      many: true
+      many: true,
+      ui: {
+        itemView: {
+          fieldMode: (args) => permissions.canManageUser(args) ? "edit" : "read"
+        }
+      }
     })
   }
 });
@@ -230,14 +235,14 @@ var Role = (0, import_core4.list)({
   access: {
     operation: {
       query: import_access7.allowAll,
-      create: permissions.canManageUser,
-      update: permissions.canManageUser,
-      delete: permissions.canManageUser
+      create: permissions.canManageRole,
+      update: permissions.canManageRole,
+      delete: permissions.canManageRole
     }
   },
   ui: {
-    hideCreate: (args) => !permissions.canManageUser(args),
-    hideDelete: (args) => !permissions.canManageUser(args)
+    hideCreate: (args) => !permissions.canManageRole(args),
+    hideDelete: (args) => !permissions.canManageRole(args)
   },
   fields: {
     name: (0, import_fields4.text)({
@@ -252,8 +257,12 @@ var Role = (0, import_core4.list)({
       label: "Qu\u1EA3n l\xFD ng\u01B0\u1EDDi d\xF9ng",
       defaultValue: false
     }),
-    canManagerPost: (0, import_fields4.checkbox)({
+    canManagePost: (0, import_fields4.checkbox)({
       label: "Qu\u1EA3n l\xFD b\xE0i \u0111\u0103ng",
+      defaultValue: false
+    }),
+    canManageRole: (0, import_fields4.checkbox)({
+      label: "Qu\u1EA3n l\xFD vai tr\xF2",
       defaultValue: false
     }),
     assignedTo: (0, import_fields4.relationship)({
@@ -286,6 +295,15 @@ var Order = (0, import_core5.list)({
     hideDelete: (args) => !permissions.canManageProducts(args)
   },
   fields: {
+    user: (0, import_fields5.relationship)({
+      label: "Ng\u01B0\u1EDDi mua",
+      ref: "User"
+    }),
+    items: (0, import_fields5.relationship)({
+      label: "S\u1EA3n ph\u1EA9m",
+      ref: "CartItem",
+      many: true
+    }),
     totalPrice: (0, import_fields5.integer)({
       label: "Gi\xE1"
     }),
@@ -294,9 +312,13 @@ var Order = (0, import_core5.list)({
       defaultValue: { kind: "now" }
     }),
     status: (0, import_fields5.select)({
+      label: "Tr\u1EA1ng th\xE1i",
+      defaultValue: "Order",
       options: [
-        { label: "X\xE1c nh\u1EADn \u0111\u01A1n h\xE0ng", value: "published" },
-        { label: "Hu\u1EF7 \u0111\u01A1n h\xE0ng", value: "draft" }
+        { label: "X\xE1c nh\u1EADn \u0111\u01A1n h\xE0ng", value: "Confirm" },
+        { label: "Hu\u1EF7 \u0111\u01A1n h\xE0ng", value: "Cancel" },
+        { label: "X\xE1c nh\u1EADn \u0111\xE3 thanh to\xE1n", value: "Paid" },
+        { label: "\u0110\u1EB7t h\xE0ng", value: "Order" }
       ]
     })
   }
@@ -310,6 +332,9 @@ var import_fields6 = require("@keystone-6/core/fields");
 var Cart = (0, import_core6.list)({
   access: {
     operation: {
+      // ...allOperations(isSignedIn),
+      // delete: permissions.canManageProducts,
+      // create: permissions.canManageProducts,
       query: import_access11.allowAll,
       update: import_access11.allowAll,
       delete: import_access11.allowAll,
@@ -390,14 +415,14 @@ var Post = (0, import_core8.list)({
   access: {
     operation: {
       query: import_access15.allowAll,
-      update: permissions.canManagerPost,
-      delete: permissions.canManagerPost,
-      create: permissions.canManagerPost
+      update: permissions.canManagePost,
+      delete: permissions.canManagePost,
+      create: permissions.canManagePost
     }
   },
   ui: {
-    hideCreate: (args) => !permissions.canManagerPost(args),
-    hideDelete: (args) => !permissions.canManagerPost(args)
+    hideCreate: (args) => !permissions.canManagePost(args),
+    hideDelete: (args) => !permissions.canManagePost(args)
   },
   fields: {
     title: (0, import_fields8.text)({
@@ -416,7 +441,23 @@ var Post = (0, import_core8.list)({
     }),
     author: (0, import_fields8.relationship)({
       label: "Ng\u01B0\u1EDDi \u0111\u0103ng",
-      ref: "User.posts"
+      ref: "User.posts",
+      hooks: {
+        resolveInput: ({ operation, resolvedData, context }) => {
+          if (operation == "create") {
+            const userId = context.session.itemId;
+            return { connect: { id: userId } };
+          }
+          return resolvedData.author;
+        }
+      },
+      ui: {
+        itemView: {
+          fieldMode: (argrs) => permissions.canManagePost(argrs) ? "edit" : "read"
+        },
+        createView: { fieldMode: "hidden" }
+        //Hiden this field when create
+      }
     })
   }
 });
@@ -464,8 +505,9 @@ var CartItem = (0, import_core10.list)({
     operation: {
       query: import_access19.allowAll,
       create: import_access19.allowAll,
-      update: import_access19.allowAll,
-      delete: import_access19.allowAll
+      // create: permissions.canManageProducts,
+      update: permissions.canManageProducts,
+      delete: permissions.canManageProducts
     }
   },
   ui: {
@@ -527,7 +569,8 @@ var { withAuth } = (0, import_auth.createAuth)({
       name
       canManageProducts
       canManageUser
-      canManagerPost
+      canManagePost
+      canManageRole
     }
   `,
   secretField: "userPassword",
@@ -544,7 +587,8 @@ var { withAuth } = (0, import_auth.createAuth)({
           name: "Admin",
           canManageProducts: true,
           canManageUser: true,
-          canManagerPost: true
+          canManagePost: true,
+          canManageRole: true
         }
       }
     }

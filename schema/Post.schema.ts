@@ -17,15 +17,15 @@ const Post = list({
   access: {
     operation: {
       query: allowAll,
-      update: permissions.canManagerPost,
-      delete: permissions.canManagerPost,
-      create: permissions.canManagerPost,
+      update: permissions.canManagePost,
+      delete: permissions.canManagePost,
+      create: permissions.canManagePost,
     },
   },
 
   ui: {
-    hideCreate: (args) => !permissions.canManagerPost(args),
-    hideDelete: (args) => !permissions.canManagerPost(args),
+    hideCreate: (args) => !permissions.canManagePost(args),
+    hideDelete: (args) => !permissions.canManagePost(args),
   },
 
   fields: {
@@ -46,6 +46,23 @@ const Post = list({
     author: relationship({
       label: "Người đăng",
       ref: "User.posts",
+      hooks: {
+        resolveInput: ({ operation, resolvedData, context }) => {
+          if (operation == "create") {
+            const userId = context.session.itemId;
+            return { connect: { id: userId } };
+          }
+
+          return resolvedData.author;
+        },
+      },
+      ui: {
+        itemView: {
+          fieldMode: (argrs) =>
+            permissions.canManagePost(argrs) ? "edit" : "read",
+        },
+        createView: { fieldMode: "hidden" }, //Hiden this field when create
+      },
     }),
   },
 });

@@ -35,6 +35,7 @@ model User {
   role               Role?      @relation("User_role", fields: [roleId], references: [id])
   roleId             String?    @map("role")
   posts              Post[]     @relation("Post_author")
+  from_Order_user    Order[]    @relation("Order_user")
   from_Cart_user     Cart[]     @relation("Cart_user")
   from_Invoice_user  Invoice[]  @relation("Invoice_user")
   from_Feedback_user Feedback[] @relation("Feedback_user")
@@ -53,15 +54,21 @@ model Role {
   name              String  @default("")
   canManageProducts Boolean @default(false)
   canManageUser     Boolean @default(false)
-  canManagerPost    Boolean @default(false)
+  canManagePost     Boolean @default(false)
+  canManageRole     Boolean @default(false)
   assignedTo        User[]  @relation("User_role")
 }
 
 model Order {
-  id         String    @id @default(cuid())
+  id         String     @id @default(cuid())
+  user       User?      @relation("Order_user", fields: [userId], references: [id])
+  userId     String?    @map("user")
+  items      CartItem[] @relation("Order_items")
   totalPrice Int?
-  createdAt  DateTime? @default(now())
-  status     String?
+  createdAt  DateTime?  @default(now())
+  status     String?    @default("Order")
+
+  @@index([userId])
 }
 
 model Cart {
@@ -87,13 +94,14 @@ model Invoice {
 }
 
 model CartItem {
-  id              String    @id @default(cuid())
-  cartId          Cart?     @relation("CartItem_cartId", fields: [cartIdId], references: [id])
-  cartIdId        String?   @map("cartId")
-  productId       Product[] @relation("CartItem_productId")
-  quantity        Int?
-  price           Int?
-  from_Cart_items Cart[]    @relation("Cart_items")
+  id               String    @id @default(cuid())
+  cartId           Cart?     @relation("CartItem_cartId", fields: [cartIdId], references: [id])
+  cartIdId         String?   @map("cartId")
+  productId        Product[] @relation("CartItem_productId")
+  quantity         Int?
+  price            Int?
+  from_Order_items Order[]   @relation("Order_items")
+  from_Cart_items  Cart[]    @relation("Cart_items")
 
   @@index([cartIdId])
 }

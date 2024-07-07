@@ -1,11 +1,14 @@
 import { list } from "@keystone-6/core";
-import { allowAll } from "@keystone-6/core/access";
+import { allowAll, allOperations } from "@keystone-6/core/access";
 import { integer, relationship, timestamp } from "@keystone-6/core/fields";
-import { permissions } from "../auth/access";
+import { isSignedIn, permissions } from "../auth/access";
 
 const Cart = list({
   access: {
     operation: {
+      // ...allOperations(isSignedIn),
+      // delete: permissions.canManageProducts,
+      // create: permissions.canManageProducts,
       query: allowAll,
       update: allowAll,
       delete: allowAll,
