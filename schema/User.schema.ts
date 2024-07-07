@@ -20,7 +20,6 @@ const User = list({
   ui: {
     hideCreate: (args) => !permissions.canManageUser(args),
     hideDelete: (args) => !permissions.canManageUser(args),
-    itemView: {},
   },
 
   fields: {

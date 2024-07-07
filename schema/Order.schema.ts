@@ -1,6 +1,11 @@
 import { list } from "@keystone-6/core";
 import { allowAll } from "@keystone-6/core/access";
-import { integer, select, timestamp } from "@keystone-6/core/fields";
+import {
+  integer,
+  relationship,
+  select,
+  timestamp,
+} from "@keystone-6/core/fields";
 import { permissions } from "../auth/access";
 
 const Order = list({
@@ -19,6 +24,15 @@ const Order = list({
   },
 
   fields: {
+    user: relationship({
+      label: "Người mua",
+      ref: "User",
+    }),
+    items: relationship({
+      label: "Sản phẩm",
+      ref: "CartItem",
+      many: true,
+    }),
     totalPrice: integer({
       label: "Giá",
     }),
@@ -27,9 +41,13 @@ const Order = list({
       defaultValue: { kind: "now" },
     }),
     status: select({
+      label: "Trạng thái",
+      defaultValue: "Order",
       options: [
-        { label: "Xác nhận đơn hàng", value: "published" },
-        { label: "Huỷ đơn hàng", value: "draft" },
+        { label: "Xác nhận đơn hàng", value: "Confirm" },
+        { label: "Huỷ đơn hàng", value: "Cancel" },
+        { label: "Xác nhận đã thanh toán", value: "Paid" },
+        { label: "Đặt hàng", value: "Order" },
       ],
     }),
   },
