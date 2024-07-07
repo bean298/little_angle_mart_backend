@@ -10,7 +10,7 @@ const CartItem = list({
       create: allowAll,
       // create: permissions.canManageProducts,
       update: permissions.canManageProducts,
-      delete: permissions.canManageProducts,
+      delete: allowAll,
     },
   },
 
