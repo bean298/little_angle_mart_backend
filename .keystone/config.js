@@ -235,9 +235,9 @@ var Role = (0, import_core4.list)({
   access: {
     operation: {
       query: import_access7.allowAll,
-      create: import_access7.allowAll,
-      update: import_access7.allowAll,
-      delete: import_access7.allowAll
+      create: permissions.canManageRole,
+      update: permissions.canManageRole,
+      delete: permissions.canManageRole
     }
   },
   ui: {
