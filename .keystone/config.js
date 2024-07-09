@@ -235,9 +235,9 @@ var Role = (0, import_core4.list)({
   access: {
     operation: {
       query: import_access7.allowAll,
-      create: permissions.canManageRole,
-      update: permissions.canManageRole,
-      delete: permissions.canManageRole
+      create: import_access7.allowAll,
+      update: import_access7.allowAll,
+      delete: import_access7.allowAll
     }
   },
   ui: {
@@ -270,7 +270,9 @@ var Role = (0, import_core4.list)({
       ref: "User.role",
       many: true,
       ui: {
-        itemView: { fieldMode: "read" }
+        itemView: {
+          fieldMode: (args) => permissions.canManageRole(args) ? "edit" : "read"
+        }
       }
     })
   }
@@ -285,15 +287,16 @@ var Order = (0, import_core5.list)({
   access: {
     operation: {
       query: import_access9.allowAll,
-      update: permissions.canManageProducts,
-      delete: permissions.canManageProducts,
-      create: permissions.canManageProducts
+      update: import_access9.allowAll,
+      delete: import_access9.allowAll,
+      create: import_access9.allowAll
+      // ..allOperations(isSignedIn),
     }
   },
-  ui: {
-    hideCreate: (args) => !permissions.canManageProducts(args),
-    hideDelete: (args) => !permissions.canManageProducts(args)
-  },
+  // ui: {
+  //   hideCreate: (args) => !permissions.canManageProducts(args),
+  //   hideDelete: (args) => !permissions.canManageProducts(args),
+  // },
   fields: {
     user: (0, import_fields5.relationship)({
       label: "Ng\u01B0\u1EDDi mua",
@@ -327,7 +330,7 @@ var Order_schema_default = Order;
 
 // schema/Cart.schema.ts
 var import_core6 = require("@keystone-6/core");
-var import_access11 = require("@keystone-6/core/access");
+var import_access10 = require("@keystone-6/core/access");
 var import_fields6 = require("@keystone-6/core/fields");
 var Cart = (0, import_core6.list)({
   access: {
@@ -335,10 +338,10 @@ var Cart = (0, import_core6.list)({
       // ...allOperations(isSignedIn),
       // delete: permissions.canManageProducts,
       // create: permissions.canManageProducts,
-      query: import_access11.allowAll,
-      update: import_access11.allowAll,
-      delete: import_access11.allowAll,
-      create: import_access11.allowAll
+      query: import_access10.allowAll,
+      update: import_access10.allowAll,
+      delete: import_access10.allowAll,
+      create: import_access10.allowAll
     }
   },
   ui: {
@@ -368,12 +371,12 @@ var Cart_schema_default = Cart;
 
 // schema/Invoice.schema.ts
 var import_core7 = require("@keystone-6/core");
-var import_access13 = require("@keystone-6/core/access");
+var import_access12 = require("@keystone-6/core/access");
 var import_fields7 = require("@keystone-6/core/fields");
 var Invoice = (0, import_core7.list)({
   access: {
     operation: {
-      query: import_access13.allowAll,
+      query: import_access12.allowAll,
       create: permissions.canManageProducts,
       update: permissions.canManageProducts,
       delete: permissions.canManageProducts
@@ -400,7 +403,7 @@ var Invoice_schema_default = Invoice;
 
 // schema/Post.schema.ts
 var import_core8 = require("@keystone-6/core");
-var import_access15 = require("@keystone-6/core/access");
+var import_access14 = require("@keystone-6/core/access");
 var import_fields8 = require("@keystone-6/core/fields");
 var import_cloudinary2 = require("@keystone-6/cloudinary");
 var import_config2 = require("dotenv/config");
@@ -414,7 +417,7 @@ var cloudinary2 = {
 var Post = (0, import_core8.list)({
   access: {
     operation: {
-      query: import_access15.allowAll,
+      query: import_access14.allowAll,
       update: permissions.canManagePost,
       delete: permissions.canManagePost,
       create: permissions.canManagePost
@@ -465,15 +468,15 @@ var Post_schema_default = Post;
 
 // schema/Feedback.schema.ts
 var import_core9 = require("@keystone-6/core");
-var import_access17 = require("@keystone-6/core/access");
+var import_access16 = require("@keystone-6/core/access");
 var import_fields9 = require("@keystone-6/core/fields");
 var Feedback = (0, import_core9.list)({
   access: {
     operation: {
-      query: import_access17.allowAll,
-      create: import_access17.allowAll,
-      update: import_access17.allowAll,
-      delete: import_access17.allowAll
+      query: import_access16.allowAll,
+      create: import_access16.allowAll,
+      update: import_access16.allowAll,
+      delete: import_access16.allowAll
     }
   },
   ui: {
@@ -498,13 +501,13 @@ var Feedback_schema_default = Feedback;
 
 // schema/CartItem.schema.ts
 var import_core10 = require("@keystone-6/core");
-var import_access19 = require("@keystone-6/core/access");
+var import_access18 = require("@keystone-6/core/access");
 var import_fields10 = require("@keystone-6/core/fields");
 var CartItem = (0, import_core10.list)({
   access: {
     operation: {
-      query: import_access19.allowAll,
-      create: import_access19.allowAll,
+      query: import_access18.allowAll,
+      create: import_access18.allowAll,
       // create: permissions.canManageProducts,
       update: permissions.canManageProducts,
       delete: permissions.canManageProducts
@@ -586,9 +589,7 @@ var { withAuth } = (0, import_auth.createAuth)({
         create: {
           name: "Admin",
           canManageProducts: true,
-          canManageUser: true,
-          canManagePost: true,
-          canManageRole: true
+          canManageUser: true
         }
       }
     }

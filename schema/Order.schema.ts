@@ -6,22 +6,23 @@ import {
   select,
   timestamp,
 } from "@keystone-6/core/fields";
-import { permissions } from "../auth/access";
+import { isSignedIn, permissions } from "../auth/access";
 
 const Order = list({
   access: {
     operation: {
       query: allowAll,
-      update: permissions.canManageProducts,
-      delete: permissions.canManageProducts,
-      create: permissions.canManageProducts,
+      update: allowAll,
+      delete: allowAll,
+      create: allowAll,
+      // ..allOperations(isSignedIn),
     },
   },
 
-  ui: {
-    hideCreate: (args) => !permissions.canManageProducts(args),
-    hideDelete: (args) => !permissions.canManageProducts(args),
-  },
+  // ui: {
+  //   hideCreate: (args) => !permissions.canManageProducts(args),
+  //   hideDelete: (args) => !permissions.canManageProducts(args),
+  // },
 
   fields: {
     user: relationship({

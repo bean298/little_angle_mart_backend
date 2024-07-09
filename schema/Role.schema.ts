@@ -7,9 +7,9 @@ const Role = list({
   access: {
     operation: {
       query: allowAll,
-      create: permissions.canManageRole,
-      update: permissions.canManageRole,
-      delete: permissions.canManageRole,
+      create: allowAll,
+      update: allowAll,
+      delete: allowAll,
     },
   },
 
@@ -44,7 +44,10 @@ const Role = list({
       ref: "User.role",
       many: true,
       ui: {
-        itemView: { fieldMode: "read" },
+        itemView: {
+          fieldMode: (args) =>
+            permissions.canManageRole(args) ? "edit" : "read",
+        },
       },
     }),
   },
