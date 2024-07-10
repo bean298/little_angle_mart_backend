@@ -1,7 +1,7 @@
 import { list } from "@keystone-6/core";
 import { allowAll } from "@keystone-6/core/access";
 import { permissions } from "../auth/access";
-import { relationship, text } from "@keystone-6/core/fields";
+import { relationship, text, timestamp } from "@keystone-6/core/fields";
 
 const Feedback = list({
   access: {
@@ -26,6 +26,10 @@ const Feedback = list({
     product: relationship({
       label: "Sản phẩm",
       ref: "Product",
+    }),
+    createdAt: timestamp({
+      label: "Thời gian đánh giá",
+      defaultValue: { kind: "now" },
     }),
     comment: text({
       label: "Đánh giá",

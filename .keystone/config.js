@@ -33,6 +33,10 @@ var import_cloudinary = require("@keystone-6/cloudinary");
 var import_config = require("dotenv/config");
 
 // auth/access.ts
+function isSignedIn({ session: session2 }) {
+  console.log({ session: session2 });
+  return Boolean(session2);
+}
 var permissions = {
   canManageProducts: ({ session: session2 }) => session2?.data.role?.canManageProducts ?? false,
   canManageUser: ({ session: session2 }) => session2?.data.role?.canManageUser ?? false,
@@ -152,11 +156,9 @@ var import_fields3 = require("@keystone-6/core/fields");
 var User = (0, import_core3.list)({
   access: {
     operation: {
-      // ...allOperations(isSignedIn),
+      ...(0, import_access5.allOperations)(isSignedIn),
       query: import_access5.allowAll,
-      create: import_access5.allowAll,
-      update: import_access5.allowAll,
-      delete: import_access5.allowAll
+      create: import_access5.allowAll
     },
     filter: {
       query: rules.canReadPeople
@@ -491,6 +493,10 @@ var Feedback = (0, import_core9.list)({
     product: (0, import_fields9.relationship)({
       label: "S\u1EA3n ph\u1EA9m",
       ref: "Product"
+    }),
+    createdAt: (0, import_fields9.timestamp)({
+      label: "Th\u1EDDi gian \u0111\xE1nh gi\xE1",
+      defaultValue: { kind: "now" }
     }),
     comment: (0, import_fields9.text)({
       label: "\u0110\xE1nh gi\xE1"
