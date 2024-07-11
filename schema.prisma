@@ -119,12 +119,13 @@ model Post {
 }
 
 model Feedback {
-  id        String   @id @default(cuid())
-  user      User?    @relation("Feedback_user", fields: [userId], references: [id])
-  userId    String?  @map("user")
-  product   Product? @relation("Feedback_product", fields: [productId], references: [id])
-  productId String?  @map("product")
-  comment   String   @default("")
+  id        String    @id @default(cuid())
+  user      User?     @relation("Feedback_user", fields: [userId], references: [id])
+  userId    String?   @map("user")
+  product   Product?  @relation("Feedback_product", fields: [productId], references: [id])
+  productId String?   @map("product")
+  createdAt DateTime? @default(now())
+  comment   String    @default("")
 
   @@index([userId])
   @@index([productId])

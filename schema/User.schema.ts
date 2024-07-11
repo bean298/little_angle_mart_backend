@@ -6,11 +6,9 @@ import { permissions, rules, isSignedIn } from "../auth/access";
 const User = list({
   access: {
     operation: {
-      // ...allOperations(isSignedIn),
+      ...allOperations(isSignedIn),
       query: allowAll,
       create: allowAll,
-      update: allowAll,
-      delete: allowAll,
     },
     filter: {
       query: rules.canReadPeople,

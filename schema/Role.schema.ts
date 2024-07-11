@@ -44,7 +44,10 @@ const Role = list({
       ref: "User.role",
       many: true,
       ui: {
-        itemView: { fieldMode: "read" },
+        itemView: {
+          fieldMode: (args) =>
+            permissions.canManageRole(args) ? "edit" : "read",
+        },
       },
     }),
   },

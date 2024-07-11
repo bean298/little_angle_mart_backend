@@ -63,8 +63,6 @@ const { withAuth } = createAuth({
           name: "Admin",
           canManageProducts: true,
           canManageUser: true,
-          canManagePost: true,
-          canManageRole: true,
         },
       },
     },

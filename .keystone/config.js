@@ -33,6 +33,10 @@ var import_cloudinary = require("@keystone-6/cloudinary");
 var import_config = require("dotenv/config");
 
 // auth/access.ts
+function isSignedIn({ session: session2 }) {
+  console.log({ session: session2 });
+  return Boolean(session2);
+}
 var permissions = {
   canManageProducts: ({ session: session2 }) => session2?.data.role?.canManageProducts ?? false,
   canManageUser: ({ session: session2 }) => session2?.data.role?.canManageUser ?? false,
@@ -152,11 +156,9 @@ var import_fields3 = require("@keystone-6/core/fields");
 var User = (0, import_core3.list)({
   access: {
     operation: {
-      // ...allOperations(isSignedIn),
+      ...(0, import_access5.allOperations)(isSignedIn),
       query: import_access5.allowAll,
-      create: import_access5.allowAll,
-      update: import_access5.allowAll,
-      delete: import_access5.allowAll
+      create: import_access5.allowAll
     },
     filter: {
       query: rules.canReadPeople
@@ -270,7 +272,9 @@ var Role = (0, import_core4.list)({
       ref: "User.role",
       many: true,
       ui: {
-        itemView: { fieldMode: "read" }
+        itemView: {
+          fieldMode: (args) => permissions.canManageRole(args) ? "edit" : "read"
+        }
       }
     })
   }
@@ -285,15 +289,16 @@ var Order = (0, import_core5.list)({
   access: {
     operation: {
       query: import_access9.allowAll,
-      update: permissions.canManageProducts,
-      delete: permissions.canManageProducts,
-      create: permissions.canManageProducts
+      update: import_access9.allowAll,
+      delete: import_access9.allowAll,
+      create: import_access9.allowAll
+      // ..allOperations(isSignedIn),
     }
   },
-  ui: {
-    hideCreate: (args) => !permissions.canManageProducts(args),
-    hideDelete: (args) => !permissions.canManageProducts(args)
-  },
+  // ui: {
+  //   hideCreate: (args) => !permissions.canManageProducts(args),
+  //   hideDelete: (args) => !permissions.canManageProducts(args),
+  // },
   fields: {
     user: (0, import_fields5.relationship)({
       label: "Ng\u01B0\u1EDDi mua",
@@ -327,7 +332,7 @@ var Order_schema_default = Order;
 
 // schema/Cart.schema.ts
 var import_core6 = require("@keystone-6/core");
-var import_access11 = require("@keystone-6/core/access");
+var import_access10 = require("@keystone-6/core/access");
 var import_fields6 = require("@keystone-6/core/fields");
 var Cart = (0, import_core6.list)({
   access: {
@@ -335,10 +340,10 @@ var Cart = (0, import_core6.list)({
       // ...allOperations(isSignedIn),
       // delete: permissions.canManageProducts,
       // create: permissions.canManageProducts,
-      query: import_access11.allowAll,
-      update: import_access11.allowAll,
-      delete: import_access11.allowAll,
-      create: import_access11.allowAll
+      query: import_access10.allowAll,
+      update: import_access10.allowAll,
+      delete: import_access10.allowAll,
+      create: import_access10.allowAll
     }
   },
   ui: {
@@ -368,12 +373,12 @@ var Cart_schema_default = Cart;
 
 // schema/Invoice.schema.ts
 var import_core7 = require("@keystone-6/core");
-var import_access13 = require("@keystone-6/core/access");
+var import_access12 = require("@keystone-6/core/access");
 var import_fields7 = require("@keystone-6/core/fields");
 var Invoice = (0, import_core7.list)({
   access: {
     operation: {
-      query: import_access13.allowAll,
+      query: import_access12.allowAll,
       create: permissions.canManageProducts,
       update: permissions.canManageProducts,
       delete: permissions.canManageProducts
@@ -400,7 +405,7 @@ var Invoice_schema_default = Invoice;
 
 // schema/Post.schema.ts
 var import_core8 = require("@keystone-6/core");
-var import_access15 = require("@keystone-6/core/access");
+var import_access14 = require("@keystone-6/core/access");
 var import_fields8 = require("@keystone-6/core/fields");
 var import_cloudinary2 = require("@keystone-6/cloudinary");
 var import_config2 = require("dotenv/config");
@@ -414,7 +419,7 @@ var cloudinary2 = {
 var Post = (0, import_core8.list)({
   access: {
     operation: {
-      query: import_access15.allowAll,
+      query: import_access14.allowAll,
       update: permissions.canManagePost,
       delete: permissions.canManagePost,
       create: permissions.canManagePost
@@ -465,15 +470,15 @@ var Post_schema_default = Post;
 
 // schema/Feedback.schema.ts
 var import_core9 = require("@keystone-6/core");
-var import_access17 = require("@keystone-6/core/access");
+var import_access16 = require("@keystone-6/core/access");
 var import_fields9 = require("@keystone-6/core/fields");
 var Feedback = (0, import_core9.list)({
   access: {
     operation: {
-      query: import_access17.allowAll,
-      create: import_access17.allowAll,
-      update: import_access17.allowAll,
-      delete: import_access17.allowAll
+      query: import_access16.allowAll,
+      create: import_access16.allowAll,
+      update: import_access16.allowAll,
+      delete: import_access16.allowAll
     }
   },
   ui: {
@@ -489,6 +494,10 @@ var Feedback = (0, import_core9.list)({
       label: "S\u1EA3n ph\u1EA9m",
       ref: "Product"
     }),
+    createdAt: (0, import_fields9.timestamp)({
+      label: "Th\u1EDDi gian \u0111\xE1nh gi\xE1",
+      defaultValue: { kind: "now" }
+    }),
     comment: (0, import_fields9.text)({
       label: "\u0110\xE1nh gi\xE1"
     })
@@ -498,13 +507,13 @@ var Feedback_schema_default = Feedback;
 
 // schema/CartItem.schema.ts
 var import_core10 = require("@keystone-6/core");
-var import_access19 = require("@keystone-6/core/access");
+var import_access18 = require("@keystone-6/core/access");
 var import_fields10 = require("@keystone-6/core/fields");
 var CartItem = (0, import_core10.list)({
   access: {
     operation: {
-      query: import_access19.allowAll,
-      create: import_access19.allowAll,
+      query: import_access18.allowAll,
+      create: import_access18.allowAll,
       // create: permissions.canManageProducts,
       update: permissions.canManageProducts,
       delete: permissions.canManageProducts
@@ -586,9 +595,7 @@ var { withAuth } = (0, import_auth.createAuth)({
         create: {
           name: "Admin",
           canManageProducts: true,
-          canManageUser: true,
-          canManagePost: true,
-          canManageRole: true
+          canManageUser: true
         }
       }
     }

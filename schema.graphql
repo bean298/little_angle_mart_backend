@@ -741,6 +741,7 @@ type Feedback {
   id: ID!
   user: User
   product: Product
+  createdAt: DateTime
   comment: String
 }
 
@@ -755,17 +756,20 @@ input FeedbackWhereInput {
   id: IDFilter
   user: UserWhereInput
   product: ProductWhereInput
+  createdAt: DateTimeNullableFilter
   comment: StringFilter
 }
 
 input FeedbackOrderByInput {
   id: OrderDirection
+  createdAt: OrderDirection
   comment: OrderDirection
 }
 
 input FeedbackUpdateInput {
   user: UserRelateToOneForUpdateInput
   product: ProductRelateToOneForUpdateInput
+  createdAt: DateTime
   comment: String
 }
 
@@ -783,6 +787,7 @@ input FeedbackUpdateArgs {
 input FeedbackCreateInput {
   user: UserRelateToOneForCreateInput
   product: ProductRelateToOneForCreateInput
+  createdAt: DateTime
   comment: String
 }
 
