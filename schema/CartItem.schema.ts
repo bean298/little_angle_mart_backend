@@ -9,8 +9,8 @@ const CartItem = list({
       query: allowAll,
       create: allowAll,
       // create: permissions.canManageProducts,
-      update: permissions.canManageProducts,
-      delete: permissions.canManageProducts,
+      update: allowAll,
+      delete: allowAll,
     },
   },
 
