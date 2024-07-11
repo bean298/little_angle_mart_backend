@@ -34,9 +34,9 @@ model User {
   userAddress        String     @default("")
   role               Role?      @relation("User_role", fields: [roleId], references: [id])
   roleId             String?    @map("role")
+  cart               Cart[]     @relation("Cart_user")
   posts              Post[]     @relation("Post_author")
   from_Order_user    Order[]    @relation("Order_user")
-  from_Cart_user     Cart[]     @relation("Cart_user")
   from_Invoice_user  Invoice[]  @relation("Invoice_user")
   from_Feedback_user Feedback[] @relation("Feedback_user")
 
