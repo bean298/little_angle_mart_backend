@@ -22,6 +22,24 @@ const Role = list({
     name: text({
       label: "Quyền hạn",
       validation: { isRequired: true },
+      hooks: {
+        validateInput: async ({
+          resolvedData,
+          addValidationError,
+          context,
+        }) => {
+          if (resolvedData.name) {
+            const existingRole = await context.query.Role.findMany({
+              where: { name: { equals: resolvedData.name } },
+              query: "id",
+            });
+
+            if (existingRole.length > 0) {
+              addValidationError("Tên quyền đã tồn tại!");
+            }
+          }
+        },
+      },
     }),
     canManageProducts: checkbox({
       label: "Quản lý sản phẩm",

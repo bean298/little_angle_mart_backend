@@ -68,6 +68,11 @@ const User = list({
         },
       },
     }),
+    cart: relationship({
+      label: "Giỏ hàng",
+      many: true,
+      ref: "Cart.user",
+    }),
     posts: relationship({
       label: "Bài đăng",
       ref: "Post.author",

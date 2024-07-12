@@ -6,13 +6,7 @@ import { isSignedIn, permissions } from "../auth/access";
 const Cart = list({
   access: {
     operation: {
-      // ...allOperations(isSignedIn),
-      // delete: permissions.canManageProducts,
-      // create: permissions.canManageProducts,
-      query: allowAll,
-      update: allowAll,
-      delete: allowAll,
-      create: allowAll,
+      ...allOperations(isSignedIn),
     },
   },
 
@@ -24,7 +18,7 @@ const Cart = list({
   fields: {
     user: relationship({
       label: "Đơn hàng của",
-      ref: "User",
+      ref: "User.cart",
     }),
     quantity: integer({
       label: "Số lượng",

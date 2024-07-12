@@ -184,6 +184,8 @@ type User {
   userPhone: String
   userAddress: String
   role: Role
+  cart(where: CartWhereInput! = {}, orderBy: [CartOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: CartWhereUniqueInput): [Cart!]
+  cartCount(where: CartWhereInput! = {}): Int
   posts(where: PostWhereInput! = {}, orderBy: [PostOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PostWhereUniqueInput): [Post!]
   postsCount(where: PostWhereInput! = {}): Int
 }
@@ -207,7 +209,14 @@ input UserWhereInput {
   userPhone: StringFilter
   userAddress: StringFilter
   role: RoleWhereInput
+  cart: CartManyRelationFilter
   posts: PostManyRelationFilter
+}
+
+input CartManyRelationFilter {
+  every: CartWhereInput
+  some: CartWhereInput
+  none: CartWhereInput
 }
 
 input PostManyRelationFilter {
@@ -231,6 +240,7 @@ input UserUpdateInput {
   userPhone: String
   userAddress: String
   role: RoleRelateToOneForUpdateInput
+  cart: CartRelateToManyForUpdateInput
   posts: PostRelateToManyForUpdateInput
 }
 
@@ -238,6 +248,13 @@ input RoleRelateToOneForUpdateInput {
   create: RoleCreateInput
   connect: RoleWhereUniqueInput
   disconnect: Boolean
+}
+
+input CartRelateToManyForUpdateInput {
+  disconnect: [CartWhereUniqueInput!]
+  set: [CartWhereUniqueInput!]
+  create: [CartCreateInput!]
+  connect: [CartWhereUniqueInput!]
 }
 
 input PostRelateToManyForUpdateInput {
@@ -259,12 +276,18 @@ input UserCreateInput {
   userPhone: String
   userAddress: String
   role: RoleRelateToOneForCreateInput
+  cart: CartRelateToManyForCreateInput
   posts: PostRelateToManyForCreateInput
 }
 
 input RoleRelateToOneForCreateInput {
   create: RoleCreateInput
   connect: RoleWhereUniqueInput
+}
+
+input CartRelateToManyForCreateInput {
+  create: [CartCreateInput!]
+  connect: [CartWhereUniqueInput!]
 }
 
 input PostRelateToManyForCreateInput {
