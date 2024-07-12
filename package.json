@@ -10,6 +10,7 @@
     "seed": "tsx ./seed-data/index.ts"
   },
   "dependencies": {
+    "@graphql-tools/schema": "^10.0.4",
     "@keystone-6/auth": "^8.0.0",
     "@keystone-6/cloudinary": "^8.0.0",
     "@keystone-6/core": "^6.1.0",

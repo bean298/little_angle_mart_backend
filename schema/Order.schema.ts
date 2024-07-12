@@ -19,10 +19,10 @@ const Order = list({
     },
   },
 
-  // ui: {
-  //   hideCreate: (args) => !permissions.canManageProducts(args),
-  //   hideDelete: (args) => !permissions.canManageProducts(args),
-  // },
+  ui: {
+    hideCreate: (args) => !permissions.canManageProducts(args),
+    hideDelete: (args) => !permissions.canManageProducts(args),
+  },
 
   fields: {
     user: relationship({
